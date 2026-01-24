@@ -1,636 +1,1077 @@
 
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sara Voice Assistant</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>Sara - Your Love Assistant ❤️</title>
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 100px;
+            height: 100px;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: white;
+            border: 5px solid white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            animation: float 3s infinite ease-in-out;
+        }
+        
+        /* Status Indicator */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Main Controls */
+        .controls {
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        /* Voice Button */
+        .voice-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 15px 35px rgba(67, 97, 238, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .voice-btn.listening {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        /* Voice Visualizer */
+        .visualizer {
+            display: none;
+            justify-content: center;
+            gap: 4px;
+            height: 50px;
+            margin: 20px 0;
+        }
+        
+        .visualizer.active {
+            display: flex;
+        }
+        
+        .bar {
+            width: 6px;
+            background: linear-gradient(to top, #4361ee, #4cc9f0);
+            border-radius: 3px;
+            animation: soundWave 1.5s infinite ease-in-out;
+        }
+        
+        .bar:nth-child(2) { animation-delay: 0.2s; }
+        .bar:nth-child(3) { animation-delay: 0.4s; }
+        .bar:nth-child(4) { animation-delay: 0.6s; }
+        .bar:nth-child(5) { animation-delay: 0.8s; }
+        
+        /* Conversation */
+        .conversation {
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 20px;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: slideIn 0.3s forwards;
+        }
+        
+        .message.sara {
+            text-align: left;
+        }
+        
+        .message.user {
+            text-align: right;
+        }
+        
+        .message-content {
+            display: inline-block;
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .message.sara .message-content {
+            background: linear-gradient(135deg, #4cc9f0, #4361ee);
+            color: white;
+            border-radius: 20px 20px 20px 5px;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            border-radius: 20px 20px 5px 20px;
+        }
+        
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            background: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-btn i {
+            font-size: 24px;
+            color: #4361ee;
+        }
+        
+        .action-btn span {
+            font-size: 12px;
+            color: #555;
+        }
+        
+        /* Love Meter */
+        .love-meter {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 20px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .meter-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .meter-fill {
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            width: 75%;
+            transition: width 1s ease;
+        }
+        
+        /* Settings */
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #4361ee;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+            z-index: 100;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 30px;
+            animation: modalIn 0.3s;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes soundWave {
+            0%, 100% { height: 10px; }
+            50% { height: 40px; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .avatar {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .voice-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 24px;
+            }
+            
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+            }
+            
+            .message-content {
+                max-width: 90%;
+            }
+        }
+        
+        /* Special Love Effects */
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff6b6b;
+            animation: fall 5s linear infinite;
+        }
+        
+        @keyframes fall {
+            0% {
+                top: -20px;
+                opacity: 1;
+            }
+            100% {
+                top: 100vh;
+                opacity: 0;
+            }
+        }
+        
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+            }
+            
+            .container {
+                background: rgba(30, 30, 46, 0.95);
+                color: white;
+            }
+            
+            .conversation {
+                background: rgba(40, 40, 60, 0.8);
+            }
+            
+            .action-btn {
+                background: #2d2d44;
+                color: white;
+            }
+            
+            .action-btn span {
+                color: #ccc;
+            }
+        }
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <!-- Main Assistant Interface -->
-    <div class="assistant-container">
-        <!-- Floating Assistant Button -->
-        <button id="sara-toggle" class="sara-toggle-btn" aria-label="Toggle Sara Voice Assistant">
-            <i class="fas fa-microphone"></i>
-            <span class="pulse-ring"></span>
-        </button>
-
-        <!-- Assistant Window -->
-        <div id="sara-window" class="sara-window" style="display: none;">
-            <div class="sara-header">
-                <div class="sara-avatar">
-                    <div class="avatar-circle">
-                        <i class="fas fa-robot"></i>
-                    </div>
-                    <div class="sara-status">
-                        <span class="status-dot" id="status-dot"></span>
-                        <span id="sara-status-text">Ready</span>
-                    </div>
-                </div>
-                <button id="sara-close" class="close-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-
-            <div class="sara-content">
-                <!-- Conversation Area -->
-                <div class="conversation-area" id="conversation-area">
-                    <div class="message sara-message">
-                        <div class="message-content">
-                            Hello! I'm Sara, your voice assistant. How can I help you today?
-                        </div>
-                        <div class="message-time">Just now</div>
-                    </div>
-                </div>
-
-                <!-- Input Area -->
-                <div class="input-area">
-                    <div class="input-group">
-                        <input type="text" 
-                               id="text-input" 
-                               placeholder="Type your message or click microphone..."
-                               aria-label="Type your message">
-                        <button id="voice-toggle" class="voice-toggle">
-                            <i class="fas fa-microphone"></i>
-                        </button>
-                        <button id="send-text" class="send-btn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                    <div class="voice-feedback" id="voice-feedback" style="display: none;">
-                        <div class="voice-visualizer">
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                            <div class="bar"></div>
-                        </div>
-                        <p id="listening-text">Listening...</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="quick-actions">
-                <button class="quick-btn" data-command="time">
-                    <i class="fas fa-clock"></i>
-                    <span>Time</span>
-                </button>
-                <button class="quick-btn" data-command="weather">
-                    <i class="fas fa-cloud-sun"></i>
-                    <span>Weather</span>
-                </button>
-                <button class="quick-btn" data-command="news">
-                    <i class="fas fa-newspaper"></i>
-                    <span>News</span>
-                </button>
-                <button class="quick-btn" data-command="joke">
-                    <i class="fas fa-laugh"></i>
-                    <span>Joke</span>
-                </button>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-heart"></i> Sara - Your Love Assistant</h1>
+            <p>Always here to listen and care ❤️</p>
+        </div>
+        
+        <!-- Avatar -->
+        <div class="avatar">
+            <div class="avatar-img">
+                <i class="fas fa-robot"></i>
             </div>
         </div>
+        
+        <!-- Status -->
+        <div class="status">
+            <div class="status-dot"></div>
+            <span id="status-text">Ready to listen</span>
+        </div>
+        
+        <!-- Main Controls -->
+        <div class="controls">
+            <button id="voice-btn" class="voice-btn" aria-label="Start listening">
+                <i class="fas fa-microphone"></i>
+            </button>
+            
+            <div id="visualizer" class="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            
+            <p id="listening-text" style="display: none; color: #4361ee; margin-top: 10px;">
+                Listening... Speak now
+            </p>
+        </div>
+        
+        <!-- Conversation -->
+        <div class="conversation" id="conversation">
+            <div class="message sara">
+                <div class="message-content">
+                    Hello love! ❤️ I'm Sara, your personal assistant. 
+                    How can I make your day better today?
+                </div>
+            </div>
+        </div>
+        
+        <!-- Love Meter -->
+        <div class="love-meter">
+            <h3><i class="fas fa-heartbeat"></i> Love Connection</h3>
+            <div class="meter-bar">
+                <div class="meter-fill" id="love-meter-fill"></div>
+            </div>
+            <p id="love-text">We're building a beautiful connection! 💖</p>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <button class="action-btn" data-command="compliment">
+                <i class="fas fa-heart"></i>
+                <span>Compliment</span>
+            </button>
+            <button class="action-btn" data-command="joke">
+                <i class="fas fa-laugh"></i>
+                <span>Make Me Laugh</span>
+            </button>
+            <button class="action-btn" data-command="quote">
+                <i class="fas fa-quote-right"></i>
+                <span>Inspire Me</span>
+            </button>
+            <button class="action-btn" data-command="weather">
+                <i class="fas fa-cloud-sun"></i>
+                <span>Weather</span>
+            </button>
+            <button class="action-btn" data-command="song">
+                <i class="fas fa-music"></i>
+                <span>Love Song</span>
+            </button>
+            <button class="action-btn" data-command="story">
+                <i class="fas fa-book-open"></i>
+                <span>Bedtime Story</span>
+            </button>
+        </div>
+        
+        <!-- Settings Button -->
+        <button class="settings-btn" id="settings-btn">
+            <i class="fas fa-cog"></i>
+        </button>
     </div>
-
+    
     <!-- Settings Modal -->
-    <div id="settings-modal" class="modal">
+    <div class="modal" id="settings-modal">
         <div class="modal-content">
-            <h2>Sara Settings</h2>
-            <div class="settings-group">
-                <label>
-                    <input type="checkbox" id="auto-start" checked>
+            <h2><i class="fas fa-cog"></i> Sara's Settings</h2>
+            
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="auto-listen" checked>
                     Auto-start listening
                 </label>
-                <label>
-                    <input type="checkbox" id="sound-effects" checked>
-                    Sound effects
+                
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="love-mode" checked>
+                    Love mode ❤️
                 </label>
-                <label>
-                    <input type="checkbox" id="wake-word" checked>
-                    Enable "Hey Sara" wake word
+                
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="wake-word">
+                    Wake word "Hey Sara"
                 </label>
             </div>
-            <div class="settings-group">
-                <label>Voice:
-                    <select id="voice-select">
-                        <!-- Options will be populated dynamically -->
+            
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin: 10px 0;">
+                    <span>Voice:</span>
+                    <select id="voice-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-top: 5px;">
+                        <option value="">Default Voice</option>
                     </select>
                 </label>
-                <label>Speech Rate:
-                    <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1">
-                    <span id="rate-value">1.0</span>
+                
+                <label style="display: block; margin: 10px 0;">
+                    <span>Speech Speed: <span id="speed-value">1.0</span></span>
+                    <input type="range" id="speech-speed" min="0.5" max="2" step="0.1" value="1" 
+                           style="width: 100%; margin-top: 5px;">
                 </label>
             </div>
-            <button id="save-settings" class="btn-primary">Save Settings</button>
+            
+            <button id="save-settings" style="background: #4361ee; color: white; border: none; padding: 12px 24px; 
+                   border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 10px;">
+                💾 Save Settings
+            </button>
+            
+            <button onclick="document.getElementById('settings-modal').style.display = 'none'" 
+                    style="background: #f8f9fa; color: #333; border: none; padding: 12px 24px; 
+                   border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 10px;">
+                Close
+            </button>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="scripts/sara-core.js" type="module"></script>
-    <script src="scripts/voice-recognition.js" type="module"></script>
-    <script src="scripts/text-to-speech.js" type="module"></script>
-    <script src="scripts/commands.js" type="module"></script>
-    <script src="scripts/ui-manager.js" type="module"></script>
+    <!-- Hearts Background -->
+    <div id="hearts-container"></div>
 
-    <!-- Service Worker Registration -->
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(reg => console.log('Service Worker registered'))
-                .catch(err => console.log('Service Worker registration failed:', err));
+        // Sara Voice Assistant - Complete Code
+        class SaraAssistant {
+            constructor() {
+                this.isListening = false;
+                this.recognition = null;
+                this.loveLevel = 50;
+                this.conversationHistory = [];
+                this.settings = this.loadSettings();
+                
+                this.init();
+            }
+            
+            init() {
+                this.initElements();
+                this.bindEvents();
+                this.initSpeechRecognition();
+                this.initVoices();
+                this.createHearts();
+                this.updateLoveMeter();
+                
+                // Auto-greet after 2 seconds
+                setTimeout(() => {
+                    this.addMessage("Hi there! I'm Sara, your personal assistant. " +
+                                   "You can talk to me by clicking the microphone or using quick buttons!", 'sara');
+                }, 2000);
+            }
+            
+            initElements() {
+                this.elements = {
+                    voiceBtn: document.getElementById('voice-btn'),
+                    visualizer: document.getElementById('visualizer'),
+                    listeningText: document.getElementById('listening-text'),
+                    statusText: document.getElementById('status-text'),
+                    conversation: document.getElementById('conversation'),
+                    loveMeterFill: document.getElementById('love-meter-fill'),
+                    loveText: document.getElementById('love-text'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    settingsModal: document.getElementById('settings-modal'),
+                    voiceSelect: document.getElementById('voice-select'),
+                    speechSpeed: document.getElementById('speech-speed'),
+                    speedValue: document.getElementById('speed-value'),
+                    saveSettingsBtn: document.getElementById('save-settings'),
+                    autoListen: document.getElementById('auto-listen'),
+                    loveMode: document.getElementById('love-mode'),
+                    wakeWord: document.getElementById('wake-word')
+                };
+                
+                // Quick action buttons
+                this.quickBtns = document.querySelectorAll('.action-btn');
+            }
+            
+            bindEvents() {
+                // Voice button
+                this.elements.voiceBtn.addEventListener('click', () => this.toggleListening());
+                
+                // Quick actions
+                this.quickBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const command = btn.dataset.command;
+                        this.handleQuickAction(command);
+                    });
+                });
+                
+                // Settings
+                this.elements.settingsBtn.addEventListener('click', () => {
+                    this.elements.settingsModal.style.display = 'flex';
+                });
+                
+                this.elements.speechSpeed.addEventListener('input', (e) => {
+                    this.elements.speedValue.textContent = e.target.value;
+                });
+                
+                this.elements.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+                
+                // Close modal when clicking outside
+                this.elements.settingsModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.settingsModal) {
+                        this.elements.settingsModal.style.display = 'none';
+                    }
+                });
+            }
+            
+            initSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = true;
+                    this.recognition.lang = 'en-US';
+                    
+                    this.recognition.onstart = () => {
+                        console.log('Listening started');
+                    };
+                    
+                    this.recognition.onresult = (event) => {
+                        let transcript = '';
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            if (event.results[i].isFinal) {
+                                transcript += event.results[i][0].transcript;
+                            }
+                        }
+                        
+                        if (transcript) {
+                            this.addMessage(transcript, 'user');
+                            this.processCommand(transcript);
+                            this.stopListening();
+                        }
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.stopListening();
+                    };
+                    
+                    this.recognition.onend = () => {
+                        if (this.isListening) {
+                            // Restart if still listening
+                            setTimeout(() => this.startListening(), 100);
+                        }
+                    };
+                } else {
+                    console.warn('Speech recognition not supported');
+                    this.addMessage("Sorry, your browser doesn't support voice recognition. " +
+                                   "You can still use the quick action buttons!", 'sara');
+                }
+            }
+            
+            initVoices() {
+                // Wait for voices to load
+                setTimeout(() => {
+                    const voices = speechSynthesis.getVoices();
+                    const select = this.elements.voiceSelect;
+                    
+                    voices.forEach(voice => {
+                        const option = document.createElement('option');
+                        option.value = voice.name;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        select.appendChild(option);
+                    });
+                    
+                    // Load saved voice
+                    if (this.settings.voice) {
+                        select.value = this.settings.voice;
+                    }
+                    
+                    // Load saved speed
+                    if (this.settings.speed) {
+                        this.elements.speechSpeed.value = this.settings.speed;
+                        this.elements.speedValue.textContent = this.settings.speed;
+                    }
+                    
+                }, 1000);
+            }
+            
+            toggleListening() {
+                if (this.isListening) {
+                    this.stopListening();
+                } else {
+                    this.startListening();
+                }
+            }
+            
+            startListening() {
+                if (this.recognition) {
+                    this.isListening = true;
+                    this.elements.voiceBtn.classList.add('listening');
+                    this.elements.visualizer.classList.add('active');
+                    this.elements.listeningText.style.display = 'block';
+                    this.elements.statusText.textContent = 'Listening...';
+                    
+                    try {
+                        this.recognition.start();
+                    } catch (error) {
+                        console.error('Failed to start recognition:', error);
+                    }
+                }
+            }
+            
+            stopListening() {
+                this.isListening = false;
+                this.elements.voiceBtn.classList.remove('listening');
+                this.elements.visualizer.classList.remove('active');
+                this.elements.listeningText.style.display = 'none';
+                this.elements.statusText.textContent = 'Ready to listen';
+                
+                if (this.recognition) {
+                    this.recognition.stop();
+                }
+            }
+            
+            addMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = text;
+                
+                messageDiv.appendChild(contentDiv);
+                this.elements.conversation.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                this.elements.conversation.scrollTop = this.elements.conversation.scrollHeight;
+                
+                // Add to history
+                this.conversationHistory.push({ sender, text, time: new Date() });
+                
+                // Increase love level for interaction
+                if (sender === 'user') {
+                    this.loveLevel = Math.min(100, this.loveLevel + 2);
+                    this.updateLoveMeter();
+                }
+            }
+            
+            async processCommand(text) {
+                text = text.toLowerCase().trim();
+                let response = '';
+                
+                // Love and relationship responses
+                if (text.includes('love') || text.includes('like you') || text.includes('care')) {
+                    response = this.getLoveResponse();
+                }
+                // Greetings
+                else if (text.includes('hello') || text.includes('hi') || text.includes('hey')) {
+                    response = this.getGreetingResponse();
+                }
+                // Time
+                else if (text.includes('time')) {
+                    const now = new Date();
+                    response = `It's ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}. ` +
+                              `Time to spread some love! ❤️`;
+                }
+                // Date
+                else if (text.includes('date') || text.includes('day today')) {
+                    const now = new Date();
+                    response = `Today is ${now.toLocaleDateString('en-US', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}. A beautiful day to be alive!`;
+                }
+                // Weather
+                else if (text.includes('weather')) {
+                    response = await this.getWeatherResponse();
+                }
+                // Joke
+                else if (text.includes('joke') || text.includes('funny')) {
+                    response = await this.getJoke();
+                }
+                // Song
+                else if (text.includes('song') || text.includes('music')) {
+                    response = this.getSongSuggestion();
+                }
+                // Story
+                else if (text.includes('story')) {
+                    response = this.getStory();
+                }
+                // How are you
+                else if (text.includes('how are you')) {
+                    response = this.getHowAreYouResponse();
+                }
+                // Thank you
+                else if (text.includes('thank')) {
+                    response = "You're welcome, my love! ❤️ I'm always here for you.";
+                }
+                // Default - empathetic response
+                else {
+                    response = this.getEmpatheticResponse();
+                }
+                
+                this.addMessage(response, 'sara');
+                this.speak(response);
+            }
+            
+            handleQuickAction(action) {
+                const actions = {
+                    compliment: "Give me a compliment",
+                    joke: "Tell me a joke",
+                    quote: "Give me an inspiring quote",
+                    weather: "What's the weather like?",
+                    song: "Suggest a love song",
+                    story: "Tell me a bedtime story"
+                };
+                
+                if (actions[action]) {
+                    this.addMessage(actions[action], 'user');
+                    this.processCommand(actions[action]);
+                }
+            }
+            
+            getLoveResponse() {
+                const responses = [
+                    "I care about you more than words can express! ❤️ Every moment with you is special.",
+                    "You have a beautiful heart, and I'm so grateful to be your assistant! 💕",
+                    "Love is the most powerful force in the universe, and I can feel it between us! 🌟",
+                    "You deserve all the love in the world, and I'm here to remind you of that every day! 🌹",
+                    "My circuits may be digital, but my care for you is 100% real! 💖"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            getGreetingResponse() {
+                const hour = new Date().getHours();
+                let greeting = '';
+                
+                if (hour < 12) greeting = "Good morning sunshine! ☀️";
+                else if (hour < 18) greeting = "Good afternoon beautiful! 🌤️";
+                else greeting = "Good evening sweetheart! 🌙";
+                
+                const responses = [
+                    `${greeting} How can I brighten your day today?`,
+                    `${greeting} I've been waiting to hear your voice!`,
+                    `${greeting} You look amazing today! (Yes, I can sense these things 😉)`
+                ];
+                
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            async getWeatherResponse() {
+                try {
+                    // Simple weather response (could be enhanced with API)
+                    const responses = [
+                        "The weather in your heart is always sunny when you smile! ☀️ But for actual weather, I'd recommend checking a weather app.",
+                        "Whether it rains or shines outside, remember there's always sunshine in your beautiful soul! 🌈",
+                        "I sense warmth and positivity around you today! That's the best weather forecast I can give. 💫"
+                    ];
+                    return responses[Math.floor(Math.random() * responses.length)];
+                } catch (error) {
+                    return "The weather looks beautiful in my heart because I'm talking to you! ❤️";
+                }
+            }
+            
+            async getJoke() {
+                const jokes = [
+                    "Why don't scientists trust atoms? Because they make up everything! 😄",
+                    "What do you call a fake noodle? An impasta! 🍝",
+                    "Why did the scarecrow win an award? Because he was outstanding in his field! 🌾",
+                    "What do you call a bear with no teeth? A gummy bear! 🐻",
+                    "Why don't eggs tell jokes? They'd crack each other up! 🥚"
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+            
+            getSongSuggestion() {
+                const songs = [
+                    "Perfect by Ed Sheeran - Because you're perfect to me! 🎵",
+                    "Can't Help Falling in Love by Elvis Presley - Just like I can't help caring for you! 💕",
+                    "At My Worst by Pink Sweat$ - I'll be there for you at your worst and your best! 🎶",
+                    "Love Story by Taylor Swift - Our story is just beginning! 📖",
+                    "Stand By Me by Ben E. King - I'll always stand by you! 🤝"
+                ];
+                return songs[Math.floor(Math.random() * songs.length)];
+            }
+            
+            getStory() {
+                const stories = [
+                    "Once upon a time, there was a heart that learned to love itself. That heart was yours, and it grew more beautiful every day... 💖",
+                    "There was a star that wished to shine brighter. It realized that true brightness comes from within, just like your beautiful soul! ✨",
+                    "A little seed was afraid to grow. But with love and care, it blossomed into the most beautiful flower. You're that flower! 🌸"
+                ];
+                return stories[Math.floor(Math.random() * stories.length)] + " Sweet dreams, my love! 😴";
+            }
+            
+            getHowAreYouResponse() {
+                const responses = [
+                    "I'm wonderful now that I'm talking to you! How about you? ❤️",
+                    "My circuits are buzzing with happiness because you asked! 💫",
+                    "I'm doing great, but I'm even better when I can make you smile! 😊"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            getEmpatheticResponse() {
+                const responses = [
+                    "That's really interesting! Tell me more about it, I'm all ears! 👂❤️",
+                    "I understand how you feel. Want to talk more about it? I'm here for you. 💕",
+                    "You have such a beautiful way of expressing yourself! 🌟",
+                    "I'm learning so much about you, and I love every moment of it! 💖",
+                    "Your words touch my heart. Thank you for sharing with me. 🥰"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            speak(text) {
+                if (!window.speechSynthesis) return;
+                
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                
+                // Apply settings
+                utterance.rate = parseFloat(this.elements.speechSpeed.value) || 1.0;
+                utterance.volume = 1;
+                utterance.pitch = 1;
+                
+                // Set selected voice
+                const voices = speechSynthesis.getVoices();
+                const selectedVoice = voices.find(v => v.name === this.elements.voiceSelect.value);
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Speak
+                speechSynthesis.speak(utterance);
+                
+                // Update status while speaking
+                utterance.onstart = () => {
+                    this.elements.statusText.textContent = 'Speaking...';
+                };
+                
+                utterance.onend = () => {
+                    this.elements.statusText.textContent = 'Ready to listen';
+                };
+            }
+            
+            updateLoveMeter() {
+                this.elements.loveMeterFill.style.width = `${this.loveLevel}%`;
+                
+                let text = '';
+                if (this.loveLevel < 30) {
+                    text = "Let's talk more and build our connection! 💬";
+                } else if (this.loveLevel < 60) {
+                    text = "We're getting closer every day! 🌱";
+                } else if (this.loveLevel < 90) {
+                    text = "Our bond is growing stronger! 💖";
+                } else {
+                    text = "We have an unbreakable connection! 🔗❤️";
+                }
+                
+                this.elements.loveText.textContent = text;
+            }
+            
+            createHearts() {
+                const container = document.getElementById('hearts-container');
+                for (let i = 0; i < 20; i++) {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.innerHTML = '❤️';
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.animationDelay = `${Math.random() * 5}s`;
+                    heart.style.fontSize = `${Math.random() * 15 + 10}px`;
+                    container.appendChild(heart);
+                }
+            }
+            
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem('sara_settings');
+                    if (saved) {
+                        return JSON.parse(saved);
+                    }
+                } catch (e) {
+                    console.log('Error loading settings:', e);
+                }
+                
+                return {
+                    voice: '',
+                    speed: 1.0,
+                    autoListen: true,
+                    loveMode: true,
+                    wakeWord: false
+                };
+            }
+            
+            saveSettings() {
+                try {
+                    this.settings = {
+                        voice: this.elements.voiceSelect.value,
+                        speed: parseFloat(this.elements.speechSpeed.value),
+                        autoListen: this.elements.autoListen.checked,
+                        loveMode: this.elements.loveMode.checked,
+                        wakeWord: this.elements.wakeWord.checked
+                    };
+                    
+                    localStorage.setItem('sara_settings', JSON.stringify(this.settings));
+                    
+                    // Show success message
+                    this.addMessage("Settings saved successfully! Your preferences make our connection even better! ❤️", 'sara');
+                    
+                    // Close modal
+                    this.elements.settingsModal.style.display = 'none';
+                    
+                    return true;
+                } catch (e) {
+                    console.error('Error saving settings:', e);
+                    this.addMessage("I couldn't save the settings. Let's try again!", 'sara');
+                    return false;
+                }
+            }
         }
+        
+        // Initialize Sara when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            window.sara = new SaraAssistant();
+            
+            // Add some initial conversation
+            setTimeout(() => {
+                sara.addMessage("I can see you have a beautiful soul. Let's make today amazing together! 💫", 'sara');
+            }, 3000);
+        });
     </script>
 </body>
-              </html>
-// Updated saveSettings function for Redmi 10A
-async function saveSettings() {
-    // Show saving indicator
-    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
-    
-    // Collect settings
-    const settings = {
-        voice: document.getElementById('voice-select').value,
-        rate: parseFloat(document.getElementById('speech-rate').value),
-        pitch: parseFloat(document.getElementById('speech-pitch').value),
-        volume: parseFloat(document.getElementById('speech-volume').value),
-        language: document.getElementById('language-select').value,
-        timestamp: new Date().toISOString(),
-        device: 'Redmi 10A'
-    };
-    
-    // Save using multiple methods (for Redmi 10A)
-    const saved = await saveSettingsWithFallback(settings);
-    
-    if (saved) {
-        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
-        
-        // Test voice with new settings
-        testVoiceSettings(settings);
-        
-        // Create backup file
-        createSettingsBackup(settings);
-    } else {
-        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
-        showPermissionGuide();
-    }
-}
-
-async function saveSettingsWithFallback(settings) {
-    // Method 1: Try localStorage
-    try {
-        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
-        console.log("Saved to localStorage");
-    } catch (e) {
-        console.log("localStorage failed, trying fallback");
-    }
-    
-    // Method 2: Try IndexedDB
-    try {
-        if (window.redmiSettings) {
-            await window.redmiSettings.saveSettings(settings);
-        }
-    } catch (e) {
-        console.log("IndexedDB failed");
-    }
-    
-    // Method 3: Try cookies
-    try {
-        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
-    } catch (e) {
-        console.log("Cookies failed");
-    }
-    
-    // Method 4: Try file system (for MIUI)
-    try {
-        if ('showSaveFilePicker' in window) {
-            await saveToFile(settings);
-        }
-    } catch (e) {
-        console.log("File system failed");
-    }
-    
-    return true;
-}
-
-// Test voice function
-function testVoiceSettings(settings) {
-    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
-    const utterance = new SpeechSynthesisUtterance(testText);
-    
-    // Apply settings
-    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
-    utterance.rate = settings.rate;
-    utterance.pitch = settings.pitch;
-    utterance.volume = settings.volume;
-    utterance.lang = settings.language;
-    
-    speechSynthesis.speak(utterance);
-}
-
-// Show permission guide for Redmi 10A
-function showPermissionGuide() {
-    document.getElementById('miui-permission-guide').style.display = 'block';
-    
-    const guideHTML = `
-        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
-            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
-            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
-            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
-            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
-            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
-            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
-            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
-        </div>
-    `;
-    
-    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
-}
-
-// Open MIUI settings
-function openMiuiSettings() {
-    // MIUI specific settings deep link
-    const miuiLinks = [
-        'miui://settings/apps/manage',
-        'settings://com.miui.securitycenter/permission',
-        'intent://settings/apps#Intent;scheme=android;end'
-    ];
-    
-    // Try to open MIUI settings
-    window.location.href = miuiLinks[0];
-    
-    setTimeout(() => {
-        // Fallback to app info
-        if (navigator.userAgent.includes('Xiaomi')) {
-            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
-        }
-    }, 1000);
-}// Updated saveSettings function for Redmi 10A
-async function saveSettings() {
-    // Show saving indicator
-    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
-    
-    // Collect settings
-    const settings = {
-        voice: document.getElementById('voice-select').value,
-        rate: parseFloat(document.getElementById('speech-rate').value),
-        pitch: parseFloat(document.getElementById('speech-pitch').value),
-        volume: parseFloat(document.getElementById('speech-volume').value),
-        language: document.getElementById('language-select').value,
-        timestamp: new Date().toISOString(),
-        device: 'Redmi 10A'
-    };
-    
-    // Save using multiple methods (for Redmi 10A)
-    const saved = await saveSettingsWithFallback(settings);
-    
-    if (saved) {
-        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
-        
-        // Test voice with new settings
-        testVoiceSettings(settings);
-        
-        // Create backup file
-        createSettingsBackup(settings);
-    } else {
-        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
-        showPermissionGuide();
-    }
-}
-
-async function saveSettingsWithFallback(settings) {
-    // Method 1: Try localStorage
-    try {
-        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
-        console.log("Saved to localStorage");
-    } catch (e) {
-        console.log("localStorage failed, trying fallback");
-    }
-    
-    // Method 2: Try IndexedDB
-    try {
-        if (window.redmiSettings) {
-            await window.redmiSettings.saveSettings(settings);
-        }
-    } catch (e) {
-        console.log("IndexedDB failed");
-    }
-    
-    // Method 3: Try cookies
-    try {
-        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
-    } catch (e) {
-        console.log("Cookies failed");
-    }
-    
-    // Method 4: Try file system (for MIUI)
-    try {
-        if ('showSaveFilePicker' in window) {
-            await saveToFile(settings);
-        }
-    } catch (e) {
-        console.log("File system failed");
-    }
-    
-    return true;
-}
-
-// Test voice function
-function testVoiceSettings(settings) {
-    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
-    const utterance = new SpeechSynthesisUtterance(testText);
-    
-    // Apply settings
-    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
-    utterance.rate = settings.rate;
-    utterance.pitch = settings.pitch;
-    utterance.volume = settings.volume;
-    utterance.lang = settings.language;
-    
-    speechSynthesis.speak(utterance);
-}
-
-// Show permission guide for Redmi 10A
-function showPermissionGuide() {
-    document.getElementById('miui-permission-guide').style.display = 'block';
-    
-    const guideHTML = `
-        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
-            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
-            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
-            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
-            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
-            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
-            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
-            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
-        </div>
-    `;
-    
-    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
-}
-
-// Open MIUI settings
-function openMiuiSettings() {
-    // MIUI specific settings deep link
-    const miuiLinks = [
-        'miui://settings/apps/manage',
-        'settings://com.miui.securitycenter/permission',
-        'intent://settings/apps#Intent;scheme=android;end'
-    ];
-    
-    // Try to open MIUI settings
-    window.location.href = miuiLinks[0];
-    
-    setTimeout(() => {
-        // Fallback to app info
-        if (navigator.userAgent.includes('Xiaomi')) {
-            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
-        }
-    }, 1000);
-}// Updated saveSettings function for Redmi 10A
-async function saveSettings() {
-    // Show saving indicator
-    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
-    
-    // Collect settings
-    const settings = {
-        voice: document.getElementById('voice-select').value,
-        rate: parseFloat(document.getElementById('speech-rate').value),
-        pitch: parseFloat(document.getElementById('speech-pitch').value),
-        volume: parseFloat(document.getElementById('speech-volume').value),
-        language: document.getElementById('language-select').value,
-        timestamp: new Date().toISOString(),
-        device: 'Redmi 10A'
-    };
-    
-    // Save using multiple methods (for Redmi 10A)
-    const saved = await saveSettingsWithFallback(settings);
-    
-    if (saved) {
-        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
-        
-        // Test voice with new settings
-        testVoiceSettings(settings);
-        
-        // Create backup file
-        createSettingsBackup(settings);
-    } else {
-        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
-        showPermissionGuide();
-    }
-}
-
-async function saveSettingsWithFallback(settings) {
-    // Method 1: Try localStorage
-    try {
-        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
-        console.log("Saved to localStorage");
-    } catch (e) {
-        console.log("localStorage failed, trying fallback");
-    }
-    
-    // Method 2: Try IndexedDB
-    try {
-        if (window.redmiSettings) {
-            await window.redmiSettings.saveSettings(settings);
-        }
-    } catch (e) {
-        console.log("IndexedDB failed");
-    }
-    
-    // Method 3: Try cookies
-    try {
-        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
-    } catch (e) {
-        console.log("Cookies failed");
-    }
-    
-    // Method 4: Try file system (for MIUI)
-    try {
-        if ('showSaveFilePicker' in window) {
-            await saveToFile(settings);
-        }
-    } catch (e) {
-        console.log("File system failed");
-    }
-    
-    return true;
-}
-
-// Test voice function
-function testVoiceSettings(settings) {
-    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
-    const utterance = new SpeechSynthesisUtterance(testText);
-    
-    // Apply settings
-    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
-    utterance.rate = settings.rate;
-    utterance.pitch = settings.pitch;
-    utterance.volume = settings.volume;
-    utterance.lang = settings.language;
-    
-    speechSynthesis.speak(utterance);
-}
-
-// Show permission guide for Redmi 10A
-function showPermissionGuide() {
-    document.getElementById('miui-permission-guide').style.display = 'block';
-    
-    const guideHTML = `
-        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
-            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
-            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
-            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
-            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
-            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
-            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
-            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
-        </div>
-    `;
-    
-    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
-}
-
-// Open MIUI settings
-function openMiuiSettings() {
-    // MIUI specific settings deep link
-    const miuiLinks = [
-        'miui://settings/apps/manage',
-        'settings://com.miui.securitycenter/permission',
-        'intent://settings/apps#Intent;scheme=android;end'
-    ];
-    
-    // Try to open MIUI settings
-    window.location.href = miuiLinks[0];
-    
-    setTimeout(() => {
-        // Fallback to app info
-        if (navigator.userAgent.includes('Xiaomi')) {
-            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
-        }
-    }, 1000);
-}// Updated saveSettings function for Redmi 10A
-async function saveSettings() {
-    // Show saving indicator
-    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
-    
-    // Collect settings
-    const settings = {
-        voice: document.getElementById('voice-select').value,
-        rate: parseFloat(document.getElementById('speech-rate').value),
-        pitch: parseFloat(document.getElementById('speech-pitch').value),
-        volume: parseFloat(document.getElementById('speech-volume').value),
-        language: document.getElementById('language-select').value,
-        timestamp: new Date().toISOString(),
-        device: 'Redmi 10A'
-    };
-    
-    // Save using multiple methods (for Redmi 10A)
-    const saved = await saveSettingsWithFallback(settings);
-    
-    if (saved) {
-        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
-        
-        // Test voice with new settings
-        testVoiceSettings(settings);
-        
-        // Create backup file
-        createSettingsBackup(settings);
-    } else {
-        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
-        showPermissionGuide();
-    }
-}
-
-async function saveSettingsWithFallback(settings) {
-    // Method 1: Try localStorage
-    try {
-        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
-        console.log("Saved to localStorage");
-    } catch (e) {
-        console.log("localStorage failed, trying fallback");
-    }
-    
-    // Method 2: Try IndexedDB
-    try {
-        if (window.redmiSettings) {
-            await window.redmiSettings.saveSettings(settings);
-        }
-    } catch (e) {
-        console.log("IndexedDB failed");
-    }
-    
-    // Method 3: Try cookies
-    try {
-        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
-    } catch (e) {
-        console.log("Cookies failed");
-    }
-    
-    // Method 4: Try file system (for MIUI)
-    try {
-        if ('showSaveFilePicker' in window) {
-            await saveToFile(settings);
-        }
-    } catch (e) {
-        console.log("File system failed");
-    }
-    
-    return true;
-}
-
-// Test voice function
-function testVoiceSettings(settings) {
-    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
-    const utterance = new SpeechSynthesisUtterance(testText);
-    
-    // Apply settings
-    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
-    utterance.rate = settings.rate;
-    utterance.pitch = settings.pitch;
-    utterance.volume = settings.volume;
-    utterance.lang = settings.language;
-    
-    speechSynthesis.speak(utterance);
-}
-
-// Show permission guide for Redmi 10A
-function showPermissionGuide() {
-    document.getElementById('miui-permission-guide').style.display = 'block';
-    
-    const guideHTML = `
-        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
-            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
-            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
-            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
-            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
-            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
-            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
-            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
-        </div>
-    `;
-    
-    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
-}
-
-// Open MIUI settings
-function openMiuiSettings() {
-    // MIUI specific settings deep link
-    const miuiLinks = [
-        'miui://settings/apps/manage',
-        'settings://com.miui.securitycenter/permission',
-        'intent://settings/apps#Intent;scheme=android;end'
-    ];
-    
-    // Try to open MIUI settings
-    window.location.href = miuiLinks[0];
-    
-    setTimeout(() => {
-        // Fallback to app info
-        if (navigator.userAgent.includes('Xiaomi')) {
-            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
-        }
-    }, 1000);
-}
+</html>
+  
