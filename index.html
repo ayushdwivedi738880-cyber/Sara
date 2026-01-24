@@ -1075,3 +1075,1588 @@
 </body>
 </html>
   
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sakura - Your Anime Assistant 🌸</title>
+    <style>
+        /* Reset & Base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Noto Sans Devanagari', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffafcc, #ffc8dd, #cdb4db);
+            min-height: 100vh;
+            color: #333;
+            overflow-x: hidden;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #ff006e, #ff6b6b);
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+            border-radius: 0 0 25px 25px;
+            box-shadow: 0 10px 30px rgba(255, 0, 110, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+            z-index: 2;
+            position: relative;
+        }
+        
+        /* Anime Character */
+        .anime-character {
+            width: 180px;
+            height: 180px;
+            margin: 20px auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .character-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .character-face {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffafcc, #ffc8dd);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            animation: float 4s infinite ease-in-out;
+        }
+        
+        /* Anime Face Features */
+        .eyes {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .eye {
+            width: 30px;
+            height: 40px;
+            background: #2a2a2a;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .eye::after {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+        
+        .mouth {
+            position: absolute;
+            bottom: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 20px;
+            background: #ff006e;
+            border-radius: 0 0 40px 40px;
+            transition: all 0.3s;
+        }
+        
+        .mouth.talking {
+            animation: talk 0.5s infinite;
+        }
+        
+        .hair {
+            position: absolute;
+            top: -30px;
+            left: -10px;
+            right: -10px;
+            height: 80px;
+            background: #ff006e;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        /* Status */
+        .status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+            padding: 8px 15px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 20px;
+            width: fit-content;
+            margin: 10px auto;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4ade80;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* Main Controls */
+        .controls {
+            padding: 20px;
+            text-align: center;
+        }
+        
+        /* Voice Button */
+        .voice-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff006e, #ff6b6b);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(255, 0, 110, 0.3);
+            transition: all 0.3s;
+            z-index: 2;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .voice-btn.listening {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            animation: heartbeat 1.5s infinite;
+        }
+        
+        /* Visualizer */
+        .visualizer {
+            display: none;
+            justify-content: center;
+            gap: 4px;
+            height: 40px;
+            margin: 15px 0;
+        }
+        
+        .visualizer.active {
+            display: flex;
+        }
+        
+        .bar {
+            width: 5px;
+            background: linear-gradient(to top, #ff006e, #ff6b6b);
+            border-radius: 3px;
+            animation: soundWave 1.5s infinite ease-in-out;
+        }
+        
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        /* Chat Area */
+        .chat-container {
+            padding: 15px;
+            max-height: 250px;
+            overflow-y: auto;
+            margin: 15px;
+            background: rgba(248, 249, 250, 0.8);
+            border-radius: 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            opacity: 0;
+            animation: slideIn 0.3s forwards;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        
+        .message.sakura .avatar {
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(135deg, #ff006e, #ff6b6b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            padding: 10px 15px;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .message.sakura .message-content {
+            background: linear-gradient(135deg, #ffafcc, #ffc8dd);
+            color: #333;
+            border-radius: 18px 18px 18px 5px;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            border-radius: 18px 18px 5px 18px;
+            margin-left: auto;
+        }
+        
+        /* Quick Actions Grid */
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .action-card {
+            background: white;
+            border: none;
+            padding: 15px 10px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .action-card i {
+            font-size: 22px;
+            color: #ff006e;
+        }
+        
+        .action-card span {
+            font-size: 11px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        /* Call Alert */
+        .call-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            display: none;
+            animation: slideDown 0.5s;
+            width: 90%;
+            max-width: 400px;
+            border-left: 5px solid #ff006e;
+        }
+        
+        .call-alert.active {
+            display: block;
+        }
+        
+        .caller-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .caller-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .call-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .call-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .accept-call {
+            background: #4ade80;
+            color: white;
+        }
+        
+        .reject-call {
+            background: #ef4444;
+            color: white;
+        }
+        
+        /* Study Timer */
+        .study-timer {
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white;
+            padding: 15px;
+            margin: 15px;
+            border-radius: 15px;
+            display: none;
+        }
+        
+        .timer-display {
+            font-size: 32px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .timer-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            background: white;
+            color: #4361ee;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        /* Settings Button */
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ff006e;
+            color: white;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 0, 110, 0.4);
+            z-index: 100;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            padding: 25px;
+            animation: modalIn 0.3s;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes soundWave {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes talk {
+            0%, 100% { height: 20px; }
+            50% { height: 10px; }
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .anime-character {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .actions-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                padding: 10px;
+            }
+            
+            .action-card {
+                padding: 12px 8px;
+            }
+            
+            .action-card i {
+                font-size: 20px;
+            }
+            
+            .action-card span {
+                font-size: 10px;
+            }
+            
+            .chat-container {
+                max-height: 200px;
+                margin: 10px;
+                padding: 10px;
+            }
+        }
+        
+        /* Cherry Blossoms */
+        .cherry-blossom {
+            position: absolute;
+            color: #ffafcc;
+            font-size: 20px;
+            animation: fall 8s linear infinite;
+            z-index: 0;
+        }
+        
+        @keyframes fall {
+            0% {
+                top: -20px;
+                opacity: 1;
+                transform: rotate(0deg);
+            }
+            100% {
+                top: 100vh;
+                opacity: 0;
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Hindi Font Support */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap');
+        
+        .hindi-text {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> साकुरा - तुम्हारी Anime Assistant 🌸</h1>
+            <p>नमस्ते! मैं साकुरा हूँ, तुम्हारी मदद करने के लिए हमेशा तैयार! 💖</p>
+        </div>
+        
+        <!-- Anime Character -->
+        <div class="anime-character">
+            <div class="character-container">
+                <div class="hair"></div>
+                <div class="character-face">
+                    <div class="eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                    <div class="mouth" id="mouth"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status -->
+        <div class="status">
+            <div class="status-dot"></div>
+            <span id="status-text">तैयार हूँ... बोलो!</span>
+        </div>
+        
+        <!-- Controls -->
+        <div class="controls">
+            <button id="voice-btn" class="voice-btn" aria-label="Start listening">
+                <i class="fas fa-microphone"></i>
+            </button>
+            
+            <div id="visualizer" class="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            
+            <p id="listening-text" style="display: none; color: #ff006e; margin-top: 10px;">
+                सुन रही हूँ... बोलो जल्दी! 👂
+            </p>
+        </div>
+        
+        <!-- Chat Area -->
+        <div class="chat-container" id="chat-container">
+            <div class="message sakura">
+                <div class="avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="message-content hindi-text">
+                    नमस्ते! मैं साकुरा हूँ, तुम्हारी personal anime assistant! 
+                    मैं तुम्हारी call manage करूंगी, पढ़ाई में help करूंगी और daily tasks में assist करूंगी! 💕
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="actions-grid">
+            <button class="action-card" data-command="call">
+                <i class="fas fa-phone"></i>
+                <span>Call Alert</span>
+            </button>
+            <button class="action-card" data-command="study">
+                <i class="fas fa-book"></i>
+                <span>Study Timer</span>
+            </button>
+            <button class="action-card" data-command="weather">
+                <i class="fas fa-cloud-sun"></i>
+                <span>मौसम</span>
+            </button>
+            <button class="action-card" data-command="news">
+                <i class="fas fa-newspaper"></i>
+                <span>समाचार</span>
+            </button>
+            <button class="action-card" data-command="reminder">
+                <i class="fas fa-bell"></i>
+                <span>Reminder</span>
+            </button>
+            <button class="action-card" data-command="joke">
+                <i class="fas fa-laugh"></i>
+                <span>जोक सुनाओ</span>
+            </button>
+            <button class="action-card" data-command="translate">
+                <i class="fas fa-language"></i>
+                <span>Translate</span>
+            </button>
+            <button class="action-card" data-command="calculator">
+                <i class="fas fa-calculator"></i>
+                <span>कैलकुलेटर</span>
+            </button>
+            <button class="action-card" data-command="music">
+                <i class="fas fa-music"></i>
+                <span>Music</span>
+            </button>
+        </div>
+        
+        <!-- Call Alert -->
+        <div class="call-alert" id="call-alert">
+            <div class="caller-info">
+                <div class="caller-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div>
+                    <h3 id="caller-name">मम्मी</h3>
+                    <p id="caller-number">+91 98765 43210</p>
+                    <p id="call-time">Calling now...</p>
+                </div>
+            </div>
+            <div class="call-actions">
+                <button class="call-btn accept-call" onclick="acceptCall()">
+                    <i class="fas fa-phone"></i> Accept
+                </button>
+                <button class="call-btn reject-call" onclick="rejectCall()">
+                    <i class="fas fa-phone-slash"></i> Reject
+                </button>
+            </div>
+        </div>
+        
+        <!-- Study Timer -->
+        <div class="study-timer" id="study-timer">
+            <h3><i class="fas fa-clock"></i> Study Timer</h3>
+            <div class="timer-display" id="timer-display">25:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn" onclick="startTimer()">Start</button>
+                <button class="timer-btn" onclick="pauseTimer()">Pause</button>
+                <button class="timer-btn" onclick="resetTimer()">Reset</button>
+            </div>
+        </div>
+        
+        <!-- Settings Button -->
+        <button class="settings-btn" id="settings-btn">
+            <i class="fas fa-cog"></i>
+        </button>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-cog"></i> सेटिंग्स</h2>
+            
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="auto-listen" checked>
+                    Auto-start listening
+                </label>
+                
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="hindi-mode" checked>
+                    हिंदी में बोलो
+                </label>
+                
+                <label style="display: block; margin: 10px 0; padding: 10px; background: #f8f9fa; border-radius: 10px;">
+                    <input type="checkbox" id="call-alerts">
+                    Call alerts show करें
+                </label>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <label style="display: block; margin: 10px 0;">
+                    <span>Voice:</span>
+                    <select id="voice-select" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd; margin-top: 5px;">
+                        <option value="">Default Voice</option>
+                    </select>
+                </label>
+                
+                <label style="display: block; margin: 10px 0;">
+                    <span>Speech Speed: <span id="speed-value">1.0</span></span>
+                    <input type="range" id="speech-speed" min="0.5" max="2" step="0.1" value="1" 
+                           style="width: 100%; margin-top: 5px;">
+                </label>
+            </div>
+            
+            <div style="margin: 20px 0; padding: 15px; background: #f0f7ff; border-radius: 10px;">
+                <h4>📞 Call Simulation</h4>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="text" id="caller-input" placeholder="Caller name" 
+                           style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px;">
+                    <button onclick="simulateCall()" style="background: #ff006e; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer;">
+                        Test Call
+                    </button>
+                </div>
+            </div>
+            
+            <button id="save-settings" style="background: #ff006e; color: white; border: none; padding: 12px 24px; 
+                   border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 10px;">
+                💾 Save Settings
+            </button>
+            
+            <button onclick="document.getElementById('settings-modal').style.display = 'none'" 
+                    style="background: #f8f9fa; color: #333; border: none; padding: 12px 24px; 
+                   border-radius: 10px; width: 100%; font-size: 16px; cursor: pointer; margin-top: 10px;">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <!-- Cherry Blossoms -->
+    <div id="cherry-container"></div>
+
+    <script>
+        // Complete Anime Assistant
+        class SakuraAssistant {
+            constructor() {
+                this.isListening = false;
+                this.recognition = null;
+                this.studyTimer = null;
+                this.timeLeft = 1500; // 25 minutes in seconds
+                this.isTimerRunning = false;
+                this.settings = this.loadSettings();
+                this.callLog = [];
+                
+                this.init();
+            }
+            
+            init() {
+                this.initElements();
+                this.bindEvents();
+                this.initSpeechRecognition();
+                this.initVoices();
+                this.createCherryBlossoms();
+                this.simulateRandomCall();
+                
+                // Initial greeting
+                setTimeout(() => {
+                    this.addMessage("तुम मुझसे कुछ भी पूछ सकते हो! मैं call manage करूंगी, पढ़ाई में help करूंगी, और daily tasks में assist करूंगी! 🌸", 'sakura', true);
+                }, 1000);
+            }
+            
+            initElements() {
+                this.elements = {
+                    voiceBtn: document.getElementById('voice-btn'),
+                    visualizer: document.getElementById('visualizer'),
+                    listeningText: document.getElementById('listening-text'),
+                    statusText: document.getElementById('status-text'),
+                    chatContainer: document.getElementById('chat-container'),
+                    mouth: document.getElementById('mouth'),
+                    settingsBtn: document.getElementById('settings-btn'),
+                    settingsModal: document.getElementById('settings-modal'),
+                    voiceSelect: document.getElementById('voice-select'),
+                    speechSpeed: document.getElementById('speech-speed'),
+                    speedValue: document.getElementById('speed-value'),
+                    saveSettingsBtn: document.getElementById('save-settings'),
+                    autoListen: document.getElementById('auto-listen'),
+                    hindiMode: document.getElementById('hindi-mode'),
+                    callAlerts: document.getElementById('call-alerts'),
+                    callAlert: document.getElementById('call-alert'),
+                    studyTimer: document.getElementById('study-timer'),
+                    timerDisplay: document.getElementById('timer-display'),
+                    callerInput: document.getElementById('caller-input')
+                };
+                
+                // Action cards
+                this.actionCards = document.querySelectorAll('.action-card');
+            }
+            
+            bindEvents() {
+                // Voice button
+                this.elements.voiceBtn.addEventListener('click', () => this.toggleListening());
+                
+                // Action cards
+                this.actionCards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        const command = card.dataset.command;
+                        this.handleQuickAction(command);
+                    });
+                });
+                
+                // Settings
+                this.elements.settingsBtn.addEventListener('click', () => {
+                    this.elements.settingsModal.style.display = 'flex';
+                });
+                
+                this.elements.speechSpeed.addEventListener('input', (e) => {
+                    this.elements.speedValue.textContent = e.target.value;
+                });
+                
+                this.elements.saveSettingsBtn.addEventListener('click', () => this.saveSettings());
+                
+                // Close modal
+                this.elements.settingsModal.addEventListener('click', (e) => {
+                    if (e.target === this.elements.settingsModal) {
+                        this.elements.settingsModal.style.display = 'none';
+                    }
+                });
+                
+                // Hindi mode toggle
+                this.elements.hindiMode.addEventListener('change', (e) => {
+                    if (e.target.checked) {
+                        this.addMessage("अब मैं हिंदी में बोलूंगी! 🇮🇳", 'sakura', true);
+                    } else {
+                        this.addMessage("Now I'll speak in English! 🇺🇸", 'sakura', true);
+                    }
+                });
+            }
+            
+            initSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = true;
+                    this.recognition.lang = this.elements.hindiMode.checked ? 'hi-IN' : 'en-US';
+                    
+                    this.recognition.onstart = () => {
+                        console.log('Listening started');
+                        this.elements.mouth.classList.add('talking');
+                    };
+                    
+                    this.recognition.onresult = (event) => {
+                        let transcript = '';
+                        for (let i = event.resultIndex; i < event.results.length; i++) {
+                            if (event.results[i].isFinal) {
+                                transcript += event.results[i][0].transcript;
+                            }
+                        }
+                        
+                        if (transcript) {
+                            this.addMessage(transcript, 'user');
+                            this.processCommand(transcript);
+                            this.stopListening();
+                        }
+                    };
+                    
+                    this.recognition.onerror = (event) => {
+                        console.error('Speech recognition error:', event.error);
+                        this.stopListening();
+                        this.addMessage("Sorry, मैं समझ नहीं पाई। कृपया फिर से बोलो!", 'sakura', true);
+                    };
+                    
+                    this.recognition.onend = () => {
+                        this.elements.mouth.classList.remove('talking');
+                        if (this.isListening) {
+                            setTimeout(() => this.startListening(), 100);
+                        }
+                    };
+                } else {
+                    console.warn('Speech recognition not supported');
+                    this.addMessage("Your browser doesn't support voice recognition. Use the buttons instead!", 'sakura', true);
+                }
+            }
+            
+            initVoices() {
+                setTimeout(() => {
+                    const voices = speechSynthesis.getVoices();
+                    const select = this.elements.voiceSelect;
+                    
+                    // Clear options
+                    select.innerHTML = '<option value="">Default Voice</option>';
+                    
+                    // Add Hindi voices first
+                    const hindiVoices = voices.filter(voice => 
+                        voice.lang.includes('hi') || voice.lang.includes('IN') || 
+                        voice.name.toLowerCase().includes('hindi')
+                    );
+                    
+                    hindiVoices.forEach(voice => {
+                        const option = document.createElement('option');
+                        option.value = voice.name;
+                        option.textContent = `🇮🇳 ${voice.name}`;
+                        select.appendChild(option);
+                    });
+                    
+                    // Add other voices
+                    const otherVoices = voices.filter(voice => !hindiVoices.includes(voice));
+                    otherVoices.forEach(voice => {
+                        const option = document.createElement('option');
+                        option.value = voice.name;
+                        option.textContent = `${voice.name} (${voice.lang})`;
+                        select.appendChild(option);
+                    });
+                    
+                    // Load saved voice
+                    if (this.settings.voice) {
+                        select.value = this.settings.voice;
+                    }
+                    
+                    if (this.settings.speed) {
+                        this.elements.speechSpeed.value = this.settings.speed;
+                        this.elements.speedValue.textContent = this.settings.speed;
+                    }
+                    
+                }, 1000);
+            }
+            
+            toggleListening() {
+                if (this.isListening) {
+                    this.stopListening();
+                } else {
+                    this.startListening();
+                }
+            }
+            
+            startListening() {
+                if (this.recognition) {
+                    this.isListening = true;
+                    this.elements.voiceBtn.classList.add('listening');
+                    this.elements.visualizer.classList.add('active');
+                    this.elements.listeningText.style.display = 'block';
+                    this.elements.statusText.textContent = 'सुन रही हूँ...';
+                    
+                    // Set language based on mode
+                    this.recognition.lang = this.elements.hindiMode.checked ? 'hi-IN' : 'en-US';
+                    
+                    try {
+                        this.recognition.start();
+                    } catch (error) {
+                        console.error('Failed to start recognition:', error);
+                    }
+                }
+            }
+            
+            stopListening() {
+                this.isListening = false;
+                this.elements.voiceBtn.classList.remove('listening');
+                this.elements.visualizer.classList.remove('active');
+                this.elements.listeningText.style.display = 'none';
+                this.elements.statusText.textContent = 'तैयार हूँ... बोलो!';
+                this.elements.mouth.classList.remove('talking');
+                
+                if (this.recognition) {
+                    this.recognition.stop();
+                }
+            }
+            
+            addMessage(text, sender, speak = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}`;
+                
+                if (sender === 'sakura') {
+                    const avatarDiv = document.createElement('div');
+                    avatarDiv.className = 'avatar';
+                    avatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+                    messageDiv.appendChild(avatarDiv);
+                }
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                if (sender === 'sakura' && this.elements.hindiMode.checked) {
+                    contentDiv.classList.add('hindi-text');
+                }
+                contentDiv.textContent = text;
+                
+                messageDiv.appendChild(contentDiv);
+                this.elements.chatContainer.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                this.elements.chatContainer.scrollTop = this.elements.chatContainer.scrollHeight;
+                
+                // Speak if requested
+                if (speak && sender === 'sakura') {
+                    this.speak(text);
+                }
+            }
+            
+            async processCommand(text) {
+                text = text.toLowerCase().trim();
+                let response = '';
+                let speak = true;
+                
+                // Call related commands
+                if (text.includes('call') || text.includes('कॉल') || text.includes('फोन')) {
+                    response = this.handleCallCommand(text);
+                }
+                // Study commands
+                else if (text.includes('study') || text.includes('पढ़ाई') || text.includes('timer') || text.includes('टाइमर')) {
+                    response = this.handleStudyCommand(text);
+                }
+                // Weather
+                else if (text.includes('weather') || text.includes('मौसम')) {
+                    response = await this.getWeather();
+                }
+                // News
+                else if (text.includes('news') || text.includes('समाचार') || text.includes('खबर')) {
+                    response = await this.getNews();
+                }
+                // Time
+                else if (text.includes('time') || text.includes('समय') || text.includes('क्या टाइम हुआ')) {
+                    const now = new Date();
+                    response = `अभी समय है: ${now.toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'})}`;
+                }
+                // Date
+                else if (text.includes('date') || text.includes('तारीख') || text.includes('आज क्या दिन है')) {
+                    const now = new Date();
+                    response = `आज की तारीख है: ${now.toLocaleDateString('hi-IN', { 
+                        weekday: 'long', 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    })}`;
+                }
+                // Joke
+                else if (text.includes('joke') || text.includes('जोक') || text.includes('चुटकुला')) {
+                    response = this.getJoke();
+                }
+                // Calculator
+                else if (text.includes('calculate') || text.includes('कैलकुलेट') || 
+                         text.includes('add') || text.includes('जोड़') || 
+                         text.includes('multiply') || text.includes('गुणा')) {
+                    response = this.calculate(text);
+                }
+                // Reminder
+                else if (text.includes('remind') || text.includes('याद दिलाओ') || text.includes('रिमाइंडर')) {
+                    response = this.setReminder(text);
+                }
+                // Music
+                else if (text.includes('music') || text.includes('गाना') || text.includes('संगीत')) {
+                    response = this.playMusic();
+                }
+                // Translation
+                else if (text.includes('translate') || text.includes('अनुवाद') || text.includes('translation')) {
+                    response = this.translateText(text);
+                }
+                // Greetings
+                else if (text.includes('hello') || text.includes('hi') || text.includes('नमस्ते') || text.includes('हाय')) {
+                    response = this.getGreeting();
+                }
+                // How are you
+                else if (text.includes('how are you') || text.includes('कैसे हो') || text.includes('कैसी हो')) {
+                    response = "मैं बिल्कुल ठीक हूँ! तुम कैसे हो? 😊";
+                }
+                // Thank you
+                else if (text.includes('thank') || text.includes('धन्यवाद') || text.includes('शुक्रिया')) {
+                    response = "तुम्हारा स्वागत है! मैं तुम्हारी help करके खुश हूँ! 💕";
+                }
+                // Default - try to understand
+                else {
+                    response = this.getDefaultResponse(text);
+                }
+                
+                this.addMessage(response, 'sakura', speak);
+            }
+            
+            handleCallCommand(text) {
+                if (text.includes('who is calling') || text.includes('कौन कॉल कर रहा है')) {
+                    if (this.callLog.length > 0) {
+                        const lastCall = this.callLog[this.callLog.length - 1];
+                        return `आखिरी कॉल ${lastCall.name} ने की थी (${lastCall.number}) ${lastCall.time} को`;
+                    }
+                    return "अभी तक कोई कॉल नहीं आई है!";
+                }
+                else if (text.includes('simulate call') || text.includes('टेस्ट कॉल')) {
+                    this.simulateRandomCall();
+                    return "टेस्ट कॉल आ रही है! देखो! 📞";
+                }
+                else if (text.includes('call log') || text.includes('कॉल लॉग')) {
+                    if (this.callLog.length === 0) return "कोई कॉल लॉग नहीं है!";
+                    
+                    let log = "आज की कॉल्स:\n";
+                    this.callLog.slice(-5).forEach(call => {
+                        log += `• ${call.name} - ${call.time}\n`;
+                    });
+                    return log;
+                }
+                else {
+                    this.simulateRandomCall();
+                    return "किसी का कॉल आ रहा है! देखो! 📱";
+                }
+            }
+            
+            handleStudyCommand(text) {
+                if (text.includes('start timer') || text.includes('टाइमर शुरू करो')) {
+                    this.startTimer();
+                    return "पढ़ाई का टाइमर शुरू हो गया! 25 मिनट का समय है! ⏰";
+                }
+                else if (text.includes('stop timer') || text.includes('टाइमर रोको')) {
+                    this.pauseTimer();
+                    return "टाइमर रोक दिया गया है!";
+                }
+                else if (text.includes('study tips') || text.includes('पढ़ाई के टिप्स')) {
+                    return "पढ़ाई के टिप्स:\n1. समय table बनाओ\n2. छोटे-छोटे breaks लो\n3. रिवीजन जरूर करो\n4. नींद पूरी लो! 💤";
+                }
+                else {
+                    this.elements.studyTimer.style.display = 'block';
+                    return "पढ़ाई का टाइमर शुरू कर दिया! फोकस से पढ़ो! 📚";
+                }
+            }
+            
+            async getWeather() {
+                // Simulated weather response
+                const responses = [
+                    "आज मौसम बहुत अच्छा है! धूप निकली है, बाहर जाकर enjoy करो! ☀️",
+                    "बाहर थोड़ी ठंड है, गर्म कपड़े पहनना! ❄️",
+                    "आज बारिश हो सकती है, umbrella साथ ले जाना! ☔",
+                    "मौसम pleasant है, perfect day for outing! 🌈"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            async getNews() {
+                // Simulated news
+                const news = [
+                    "आज की बड़ी खबर: Technology में नए innovations! 📱",
+                    "शिक्षा मंत्रालय ने नई policy announce की! 🎓",
+                    "स्वास्थ्य: रोजाना exercise करना है जरूरी! 🏃‍♀️",
+                    "मनोरंजन: नई movie release होने वाली है! 🎬"
+                ];
+                return news[Math.floor(Math.random() * news.length)];
+            }
+            
+            getJoke() {
+                const jokes = [
+                    "क्या आप जानते हैं किताबें क्यों डरती हैं? क्योंकि उनमें chapter होते हैं! 📚",
+                    "टीचर: बताओ 2 और 2 कितने होते हैं? स्टूडेंट: 4! टीचर: Good! स्टूडेंट: Good नहीं, perfect! 😄",
+                    "पापा: बेटा तुम्हारी उंगलियाँ क्यों पीली हैं? बेटा: मैंने सूरज को पकड़ने की कोशिश की थी! 🌞"
+                ];
+                return jokes[Math.floor(Math.random() * jokes.length)];
+            }
+            
+            calculate(text) {
+                try {
+                    // Extract numbers from text
+                    const numbers = text.match(/\d+/g);
+                    if (!numbers || numbers.length < 2) {
+                        return "कम से कम 2 numbers दो calculation के लिए!";
+                    }
+                    
+                    const num1 = parseInt(numbers[0]);
+                    const num2 = parseInt(numbers[1]);
+                    let result = 0;
+                    let operation = "";
+                    
+                    if (text.includes('add') || text.includes('plus') || text.includes('जोड़')) {
+                        result = num1 + num2;
+                        operation = "जोड़";
+                    } else if (text.includes('subtract') || text.includes('minus') || text.includes('घटाओ')) {
+                        result = num1 - num2;
+                        operation = "घटाना";
+                    } else if (text.includes('multiply') || text.includes('गुणा')) {
+                        result = num1 * num2;
+                        operation = "गुणा";
+                    } else if (text.includes('divide') || text.includes('भाग')) {
+                        if (num2 === 0) return "शून्य से भाग नहीं हो सकता!";
+                        result = num1 / num2;
+                        operation = "भाग";
+                    } else {
+                        // Default to addition
+                        result = num1 + num2;
+                        operation = "जोड़";
+                    }
+                    
+                    return `${num1} और ${num2} का ${operation} = ${result}`;
+                } catch (error) {
+                    return "Calculation में error आ गया! फिर से try करो!";
+                }
+            }
+            
+            setReminder(text) {
+                // Extract time from text
+                const timeMatch = text.match(/(\d+)\s*(minutes?|mins?|घंटे|मिनट|घंटा)/i);
+                if (timeMatch) {
+                    const time = parseInt(timeMatch[1]);
+                    const unit = timeMatch[2].toLowerCase();
+                    
+                    let minutes = time;
+                    if (unit.includes('hour') || unit.includes('घंट')) {
+                        minutes = time * 60;
+                    }
+                    
+                    setTimeout(() => {
+                        this.addMessage(`⏰ Reminder: ${text.replace(/remind|याद दिलाओ|रिमाइंडर/gi, '').trim()}`, 'sakura', true);
+                    }, minutes * 60000);
+                    
+                    return `${minutes} मिनट में reminder सेट कर दिया! ⏰`;
+                }
+                return "कृपया समय specify करो, जैसे: '10 मिनट में reminder सेट करो'";
+            }
+            
+            playMusic() {
+                const songs = [
+                    "Playing: लग जा गले - Lata Mangeshkar 🎵",
+                    "Playing: तुम ही हो - Arijit Singh 🎶",
+                    "Playing: Shape of You - Ed Sheeran 🎧",
+                    "Playing: ब्लैंक स्पेस - Taylor Swift 🎤"
+                ];
+                return songs[Math.floor(Math.random() * songs.length)];
+            }
+            
+            translateText(text) {
+                // Simple translation examples
+                const english = text.replace(/translate|अनुवाद/gi, '').trim();
+                
+                const translations = {
+                    "hello": "नमस्ते",
+                    "how are you": "आप कैसे हैं",
+                    "thank you": "धन्यवाद",
+                    "good morning": "शुभ प्रभात",
+                    "i love you": "मैं तुमसे प्यार करता हूँ",
+                    "what is your name": "तुम्हारा नाम क्या है"
+                };
+                
+                for (const [eng, hin] of Object.entries(translations)) {
+                    if (english.toLowerCase().includes(eng)) {
+                        return `${eng} = ${hin}`;
+                    }
+                }
+                
+                return "Translation: मैं अभी सीख रही हूँ! जल्दी ही और words translate करूंगी! 📖";
+            }
+            
+            getGreeting() {
+                const hour = new Date().getHours();
+                let greeting = '';
+                
+                if (hour < 12) greeting = "शुभ प्रभात! ☀️";
+                else if (hour < 18) greeting = "नमस्ते! 🌤️";
+                else greeting = "शुभ संध्या! 🌙";
+                
+                return `${greeting} मैं साकुरा हूँ! तुम कैसे हो?`;
+            }
+            
+            getDefaultResponse(text) {
+                const responses = [
+                    "मैं समझ गई! तुम और कुछ पूछना चाहते हो? 🤔",
+                    "Interesting! Tell me more about it! 💬",
+                    "मैं तुम्हारी बात समझ रही हूँ! क्या मैं और help कर सकती हूँ? 💕",
+                    "अच्छा! मैं note कर लेती हूँ! 📝"
+                ];
+                return responses[Math.floor(Math.random() * responses.length)];
+            }
+            
+            handleQuickAction(command) {
+                const actions = {
+                    'call': 'कौन कॉल कर रहा है?',
+                    'study': 'पढ़ाई का टाइमर शुरू करो',
+                    'weather': 'आज का मौसम कैसा है?',
+                    'news': 'आज की ताजा खबर सुनाओ',
+                    'reminder': '10 मिनट में reminder सेट करो',
+                    'joke': 'एक जोक सुनाओ',
+                    'translate': 'hello का हिंदी अनुवाद बताओ',
+                    'calculator': '10 और 20 को जोड़ो',
+                    'music': 'गाना बजाओ'
+                };
+                
+                if (actions[command]) {
+                    this.addMessage(actions[command], 'user');
+                    this.processCommand(actions[command]);
+                }
+            }
+            
+            speak(text) {
+                if (!window.speechSynthesis) return;
+                
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = parseFloat(this.elements.speechSpeed.value) || 1.0;
+                utterance.volume = 1;
+                utterance.pitch = 1.2; // Anime girl voice pitch
+                
+                // Set Hindi voice if available
+                if (this.elements.hindiMode.checked) {
+                    const voices = speechSynthesis.getVoices();
+                    const hindiVoice = voices.find(v => 
+                        v.lang.includes('hi') || v.name.toLowerCase().includes('hindi')
+                    );
+                    if (hindiVoice) utterance.voice = hindiVoice;
+                    utterance.lang = 'hi-IN';
+                }
+                
+                // Apply selected voice
+                const selectedVoice = speechSynthesis.getVoices()
+                    .find(v => v.name === this.elements.voiceSelect.value);
+                if (selectedVoice) utterance.voice = selectedVoice;
+                
+                // Animate mouth while speaking
+                utterance.onstart = () => {
+                    this.elements.mouth.classList.add('talking');
+                    this.elements.statusText.textContent = 'बोल रही हूँ...';
+                };
+                
+                utterance.onend = () => {
+                    this.elements.mouth.classList.remove('talking');
+                    this.elements.statusText.textContent = 'तैयार हूँ... बोलो!';
+                };
+                
+                speechSynthesis.speak(utterance);
+            }
+            
+            simulateRandomCall() {
+                if (!this.elements.callAlerts.checked) return;
+                
+                const callers = [
+                    { name: "मम्मी", number: "+91 98765 43210" },
+                    { name: "पापा", number: "+91 98765 43211" },
+                    { name: "भैया", number: "+91 98765 43212" },
+                    { name: "दोस्त", number: "+91 98765 43213" },
+                    { name: "Unknown", number: "Private Number" }
+                ];
+                
+                const caller = callers[Math.floor(Math.random() * callers.length)];
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('hi-IN', {hour: '2-digit', minute:'2-digit'});
+                
+                // Update call alert
+                document.getElementById('caller-name').textContent = caller.name;
+                document.getElementById('caller-number').textContent = caller.number;
+                document.getElementById('call-time').textContent = `Calling... ${timeStr}`;
+                
+                // Show alert
+                this.elements.callAlert.classList.add('active');
+                
+                // Add to call log
+                this.callLog.push({
+                    name: caller.name,
+                    number: caller.number,
+                    time: timeStr,
+                    date: now.toLocaleDateString()
+                });
+                
+                // Speak alert
+                setTimeout(() => {
+                    this.speak(`${caller.name} का कॉल आ रहा है!`);
+                }, 500);
+                
+                // Auto hide after 30 seconds
+                setTimeout(() => {
+                    this.elements.callAlert.classList.remove('active');
+                }, 30000);
+            }
+            
+            simulateCall() {
+                const name = this.elements.callerInput.value.trim() || "Test Caller";
+                document.getElementById('caller-name').textContent = name;
+                document.getElementById('caller-number').textContent = "+91 98765 00000";
+                document.getElementById('call-time').textContent = "Test Call...";
+                
+                this.elements.callAlert.classList.add('active');
+                
+                setTimeout(() => {
+                    this.speak(`${name} का test कॉल आ रहा है!`);
+                }, 500);
+            }
+            
+            acceptCall() {
+                this.elements.callAlert.classList.remove('active');
+                this.addMessage("कॉल accept कर ली! बातचीत शुरू करो! 📞", 'sakura', true);
+            }
+            
+            rejectCall() {
+                this.elements.callAlert.classList.remove('active');
+                this.addMessage("कॉल reject कर दी! बाद में बात करना! ❌", 'sakura', true);
+            }
+            
+            // Study Timer Functions
+            startTimer() {
+                if (this.isTimerRunning) return;
+                
+                this.isTimerRunning = true;
+                this.elements.studyTimer.style.display = 'block';
+                this.updateTimerDisplay();
+                
+                this.studyTimer = setInterval(() => {
+                    this.timeLeft--;
+                    this.updateTimerDisplay();
+                    
+                    if (this.timeLeft <= 0) {
+                        this.pauseTimer();
+                        this.addMessage("टाइमर खत्म! ब्रेक लो! 🎉", 'sakura', true);
+                        this.timeLeft = 1500; // Reset to 25 minutes
+                    }
+                }, 1000);
+            }
+            
+            pauseTimer() {
+                this.isTimerRunning = false;
+                clearInterval(this.studyTimer);
+            }
+            
+            resetTimer() {
+                this.pauseTimer();
+                this.timeLeft = 1500;
+                this.updateTimerDisplay();
+            }
+            
+            updateTimerDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                this.elements.timerDisplay.textContent = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }
+            
+            createCherryBlossoms() {
+                const container = document.getElementById('cherry-container');
+                for (let i = 0; i < 15; i++) {
+                    const blossom = document.createElement('div');
+                    blossom.className = 'cherry-blossom';
+                    blossom.innerHTML = '🌸';
+                    blossom.style.left = `${Math.random() * 100}%`;
+                    blossom.style.animationDelay = `${Math.random() * 8}s`;
+                    blossom.style.fontSize = `${Math.random() * 15 + 10}px`;
+                    container.appendChild(blossom);
+                }
+            }
+            
+            loadSettings() {
+                try {
+                    const saved = localStorage.getItem('sakura_settings');
+                    if (saved) return JSON.parse(saved);
+                } catch (e) {
+                    console.log('Error loading settings:', e);
+                }
+                
+                return {
+                    voice: '',
+                    speed: 1.0,
+                    autoListen: true,
+                    hindiMode: true,
+                    callAlerts: true
+                };
+            }
+            
+            saveSettings() {
+                try {
+                    this.settings = {
+                        voice: this.elements.voiceSelect.value,
+                        speed: parseFloat(this.elements.speechSpeed.value),
+                        autoListen: this.elements.autoListen.checked,
+                        hindiMode: this.elements.hindiMode.checked,
+                        callAlerts: this.elements.callAlerts.checked
+                    };
+                    
+                    localStorage.setItem('sakura_settings', JSON.stringify(this.settings));
+                    
+                    this.addMessage("सेटिंग्स सेव हो गईं! अब और बेहतर काम करूंगी! 💕", 'sakura', true);
+                    this.elements.settingsModal.style.display = 'none';
+                    
+                    return true;
+                } catch (e) {
+                    console.error('Error saving settings:', e);
+                    this.addMessage("सेटिंग्स सेव नहीं हुईं! फिर से try करो!", 'sakura', true);
+                    return false;
+                }
+            }
+        }
+        
+        // Global functions for buttons
+        function simulateCall() {
+            window.sakura.simulateCall();
+        }
+        
+        function acceptCall() {
+            window.sakura.acceptCall();
+        }
+        
+        function rejectCall() {
+            window.sakura.rejectCall();
+        }
+        
+        function startTimer() {
+            window.sakura.startTimer();
+        }
+        
+        function pauseTimer() {
+            window.sakura.pauseTimer();
+        }
+        
+        function resetTimer() {
+            window.sakura.resetTimer();
+        }
+        
+        // Initialize Sakura
+        window.addEventListener('DOMContentLoaded', () => {
+            window.sakura = new SakuraAssistant();
+            
+            // Auto-simulate a call after 10 seconds
+            setTimeout(() => {
+                sakura.simulateRandomCall();
+            }, 10000);
+            
+            // Random messages
+            setInterval(() => {
+                const messages = [
+                    "तुम कैसे हो? कुछ help चाहिए? 💕",
+                    "क्या तुमने पढ़ाई की? टाइमर शुरू करो! 📚",
+                    "थोड़ा ब्रेक लो, music सुनो! 🎵",
+                    "मैं तुम्हारी wait कर रही हूँ! 🌸"
+                ];
+                
+                if (Math.random() > 0.7 && !sakura.isListening) {
+                    sakura.addMessage(messages[Math.floor(Math.random() * messages.length)], 'sakura', false);
+                }
+            }, 60000); // Every minute
+        });
+    </script>
+</body>
+    </html>
