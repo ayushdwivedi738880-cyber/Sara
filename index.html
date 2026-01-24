@@ -145,3 +145,492 @@
     </script>
 </body>
               </html>
+// Updated saveSettings function for Redmi 10A
+async function saveSettings() {
+    // Show saving indicator
+    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
+    
+    // Collect settings
+    const settings = {
+        voice: document.getElementById('voice-select').value,
+        rate: parseFloat(document.getElementById('speech-rate').value),
+        pitch: parseFloat(document.getElementById('speech-pitch').value),
+        volume: parseFloat(document.getElementById('speech-volume').value),
+        language: document.getElementById('language-select').value,
+        timestamp: new Date().toISOString(),
+        device: 'Redmi 10A'
+    };
+    
+    // Save using multiple methods (for Redmi 10A)
+    const saved = await saveSettingsWithFallback(settings);
+    
+    if (saved) {
+        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
+        
+        // Test voice with new settings
+        testVoiceSettings(settings);
+        
+        // Create backup file
+        createSettingsBackup(settings);
+    } else {
+        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
+        showPermissionGuide();
+    }
+}
+
+async function saveSettingsWithFallback(settings) {
+    // Method 1: Try localStorage
+    try {
+        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
+        console.log("Saved to localStorage");
+    } catch (e) {
+        console.log("localStorage failed, trying fallback");
+    }
+    
+    // Method 2: Try IndexedDB
+    try {
+        if (window.redmiSettings) {
+            await window.redmiSettings.saveSettings(settings);
+        }
+    } catch (e) {
+        console.log("IndexedDB failed");
+    }
+    
+    // Method 3: Try cookies
+    try {
+        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
+    } catch (e) {
+        console.log("Cookies failed");
+    }
+    
+    // Method 4: Try file system (for MIUI)
+    try {
+        if ('showSaveFilePicker' in window) {
+            await saveToFile(settings);
+        }
+    } catch (e) {
+        console.log("File system failed");
+    }
+    
+    return true;
+}
+
+// Test voice function
+function testVoiceSettings(settings) {
+    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
+    const utterance = new SpeechSynthesisUtterance(testText);
+    
+    // Apply settings
+    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
+    utterance.rate = settings.rate;
+    utterance.pitch = settings.pitch;
+    utterance.volume = settings.volume;
+    utterance.lang = settings.language;
+    
+    speechSynthesis.speak(utterance);
+}
+
+// Show permission guide for Redmi 10A
+function showPermissionGuide() {
+    document.getElementById('miui-permission-guide').style.display = 'block';
+    
+    const guideHTML = `
+        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
+            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
+            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
+            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
+            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
+            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
+            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
+            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
+        </div>
+    `;
+    
+    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
+}
+
+// Open MIUI settings
+function openMiuiSettings() {
+    // MIUI specific settings deep link
+    const miuiLinks = [
+        'miui://settings/apps/manage',
+        'settings://com.miui.securitycenter/permission',
+        'intent://settings/apps#Intent;scheme=android;end'
+    ];
+    
+    // Try to open MIUI settings
+    window.location.href = miuiLinks[0];
+    
+    setTimeout(() => {
+        // Fallback to app info
+        if (navigator.userAgent.includes('Xiaomi')) {
+            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
+        }
+    }, 1000);
+}// Updated saveSettings function for Redmi 10A
+async function saveSettings() {
+    // Show saving indicator
+    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
+    
+    // Collect settings
+    const settings = {
+        voice: document.getElementById('voice-select').value,
+        rate: parseFloat(document.getElementById('speech-rate').value),
+        pitch: parseFloat(document.getElementById('speech-pitch').value),
+        volume: parseFloat(document.getElementById('speech-volume').value),
+        language: document.getElementById('language-select').value,
+        timestamp: new Date().toISOString(),
+        device: 'Redmi 10A'
+    };
+    
+    // Save using multiple methods (for Redmi 10A)
+    const saved = await saveSettingsWithFallback(settings);
+    
+    if (saved) {
+        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
+        
+        // Test voice with new settings
+        testVoiceSettings(settings);
+        
+        // Create backup file
+        createSettingsBackup(settings);
+    } else {
+        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
+        showPermissionGuide();
+    }
+}
+
+async function saveSettingsWithFallback(settings) {
+    // Method 1: Try localStorage
+    try {
+        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
+        console.log("Saved to localStorage");
+    } catch (e) {
+        console.log("localStorage failed, trying fallback");
+    }
+    
+    // Method 2: Try IndexedDB
+    try {
+        if (window.redmiSettings) {
+            await window.redmiSettings.saveSettings(settings);
+        }
+    } catch (e) {
+        console.log("IndexedDB failed");
+    }
+    
+    // Method 3: Try cookies
+    try {
+        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
+    } catch (e) {
+        console.log("Cookies failed");
+    }
+    
+    // Method 4: Try file system (for MIUI)
+    try {
+        if ('showSaveFilePicker' in window) {
+            await saveToFile(settings);
+        }
+    } catch (e) {
+        console.log("File system failed");
+    }
+    
+    return true;
+}
+
+// Test voice function
+function testVoiceSettings(settings) {
+    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
+    const utterance = new SpeechSynthesisUtterance(testText);
+    
+    // Apply settings
+    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
+    utterance.rate = settings.rate;
+    utterance.pitch = settings.pitch;
+    utterance.volume = settings.volume;
+    utterance.lang = settings.language;
+    
+    speechSynthesis.speak(utterance);
+}
+
+// Show permission guide for Redmi 10A
+function showPermissionGuide() {
+    document.getElementById('miui-permission-guide').style.display = 'block';
+    
+    const guideHTML = `
+        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
+            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
+            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
+            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
+            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
+            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
+            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
+            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
+        </div>
+    `;
+    
+    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
+}
+
+// Open MIUI settings
+function openMiuiSettings() {
+    // MIUI specific settings deep link
+    const miuiLinks = [
+        'miui://settings/apps/manage',
+        'settings://com.miui.securitycenter/permission',
+        'intent://settings/apps#Intent;scheme=android;end'
+    ];
+    
+    // Try to open MIUI settings
+    window.location.href = miuiLinks[0];
+    
+    setTimeout(() => {
+        // Fallback to app info
+        if (navigator.userAgent.includes('Xiaomi')) {
+            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
+        }
+    }, 1000);
+}// Updated saveSettings function for Redmi 10A
+async function saveSettings() {
+    // Show saving indicator
+    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
+    
+    // Collect settings
+    const settings = {
+        voice: document.getElementById('voice-select').value,
+        rate: parseFloat(document.getElementById('speech-rate').value),
+        pitch: parseFloat(document.getElementById('speech-pitch').value),
+        volume: parseFloat(document.getElementById('speech-volume').value),
+        language: document.getElementById('language-select').value,
+        timestamp: new Date().toISOString(),
+        device: 'Redmi 10A'
+    };
+    
+    // Save using multiple methods (for Redmi 10A)
+    const saved = await saveSettingsWithFallback(settings);
+    
+    if (saved) {
+        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
+        
+        // Test voice with new settings
+        testVoiceSettings(settings);
+        
+        // Create backup file
+        createSettingsBackup(settings);
+    } else {
+        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
+        showPermissionGuide();
+    }
+}
+
+async function saveSettingsWithFallback(settings) {
+    // Method 1: Try localStorage
+    try {
+        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
+        console.log("Saved to localStorage");
+    } catch (e) {
+        console.log("localStorage failed, trying fallback");
+    }
+    
+    // Method 2: Try IndexedDB
+    try {
+        if (window.redmiSettings) {
+            await window.redmiSettings.saveSettings(settings);
+        }
+    } catch (e) {
+        console.log("IndexedDB failed");
+    }
+    
+    // Method 3: Try cookies
+    try {
+        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
+    } catch (e) {
+        console.log("Cookies failed");
+    }
+    
+    // Method 4: Try file system (for MIUI)
+    try {
+        if ('showSaveFilePicker' in window) {
+            await saveToFile(settings);
+        }
+    } catch (e) {
+        console.log("File system failed");
+    }
+    
+    return true;
+}
+
+// Test voice function
+function testVoiceSettings(settings) {
+    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
+    const utterance = new SpeechSynthesisUtterance(testText);
+    
+    // Apply settings
+    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
+    utterance.rate = settings.rate;
+    utterance.pitch = settings.pitch;
+    utterance.volume = settings.volume;
+    utterance.lang = settings.language;
+    
+    speechSynthesis.speak(utterance);
+}
+
+// Show permission guide for Redmi 10A
+function showPermissionGuide() {
+    document.getElementById('miui-permission-guide').style.display = 'block';
+    
+    const guideHTML = `
+        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
+            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
+            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
+            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
+            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
+            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
+            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
+            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
+        </div>
+    `;
+    
+    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
+}
+
+// Open MIUI settings
+function openMiuiSettings() {
+    // MIUI specific settings deep link
+    const miuiLinks = [
+        'miui://settings/apps/manage',
+        'settings://com.miui.securitycenter/permission',
+        'intent://settings/apps#Intent;scheme=android;end'
+    ];
+    
+    // Try to open MIUI settings
+    window.location.href = miuiLinks[0];
+    
+    setTimeout(() => {
+        // Fallback to app info
+        if (navigator.userAgent.includes('Xiaomi')) {
+            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
+        }
+    }, 1000);
+}// Updated saveSettings function for Redmi 10A
+async function saveSettings() {
+    // Show saving indicator
+    showNotification("💾 सेटिंग्स सेव हो रही हैं...", "info");
+    
+    // Collect settings
+    const settings = {
+        voice: document.getElementById('voice-select').value,
+        rate: parseFloat(document.getElementById('speech-rate').value),
+        pitch: parseFloat(document.getElementById('speech-pitch').value),
+        volume: parseFloat(document.getElementById('speech-volume').value),
+        language: document.getElementById('language-select').value,
+        timestamp: new Date().toISOString(),
+        device: 'Redmi 10A'
+    };
+    
+    // Save using multiple methods (for Redmi 10A)
+    const saved = await saveSettingsWithFallback(settings);
+    
+    if (saved) {
+        showNotification("✅ सेटिंग्स सेव हो गईं!", "success");
+        
+        // Test voice with new settings
+        testVoiceSettings(settings);
+        
+        // Create backup file
+        createSettingsBackup(settings);
+    } else {
+        showNotification("❌ सेटिंग्स सेव नहीं हुईं", "error");
+        showPermissionGuide();
+    }
+}
+
+async function saveSettingsWithFallback(settings) {
+    // Method 1: Try localStorage
+    try {
+        localStorage.setItem('sara_settings_v2', JSON.stringify(settings));
+        console.log("Saved to localStorage");
+    } catch (e) {
+        console.log("localStorage failed, trying fallback");
+    }
+    
+    // Method 2: Try IndexedDB
+    try {
+        if (window.redmiSettings) {
+            await window.redmiSettings.saveSettings(settings);
+        }
+    } catch (e) {
+        console.log("IndexedDB failed");
+    }
+    
+    // Method 3: Try cookies
+    try {
+        document.cookie = `sara_settings=${encodeURIComponent(JSON.stringify(settings))}; max-age=31536000; path=/`;
+    } catch (e) {
+        console.log("Cookies failed");
+    }
+    
+    // Method 4: Try file system (for MIUI)
+    try {
+        if ('showSaveFilePicker' in window) {
+            await saveToFile(settings);
+        }
+    } catch (e) {
+        console.log("File system failed");
+    }
+    
+    return true;
+}
+
+// Test voice function
+function testVoiceSettings(settings) {
+    const testText = "नमस्ते, मैं सारा हूं। यह मेरी आवाज का टेस्ट है।";
+    const utterance = new SpeechSynthesisUtterance(testText);
+    
+    // Apply settings
+    utterance.voice = speechSynthesis.getVoices().find(v => v.name === settings.voice);
+    utterance.rate = settings.rate;
+    utterance.pitch = settings.pitch;
+    utterance.volume = settings.volume;
+    utterance.lang = settings.language;
+    
+    speechSynthesis.speak(utterance);
+}
+
+// Show permission guide for Redmi 10A
+function showPermissionGuide() {
+    document.getElementById('miui-permission-guide').style.display = 'block';
+    
+    const guideHTML = `
+        <div style="background: #d4edda; padding: 15px; border-radius: 10px; margin: 15px 0;">
+            <h4>🛠️ Redmi 10A में Permanent Fix:</h4>
+            <p><strong>कदम 1:</strong> Chrome के 3 dots menu पर जाएं</p>
+            <p><strong>कदम 2:</strong> "Settings" चुनें</p>
+            <p><strong>कदम 3:</strong> "Site settings" चुनें</p>
+            <p><strong>कदम 4:</strong> "Storage" में जाएं</p>
+            <p><strong>कदम 5:</strong> "Clear data" पर क्लिक करें</p>
+            <p><strong>कदम 6:</strong> वापस आकर फिर से सेव करें</p>
+        </div>
+    `;
+    
+    document.querySelector('.settings-group').insertAdjacentHTML('afterend', guideHTML);
+}
+
+// Open MIUI settings
+function openMiuiSettings() {
+    // MIUI specific settings deep link
+    const miuiLinks = [
+        'miui://settings/apps/manage',
+        'settings://com.miui.securitycenter/permission',
+        'intent://settings/apps#Intent;scheme=android;end'
+    ];
+    
+    // Try to open MIUI settings
+    window.location.href = miuiLinks[0];
+    
+    setTimeout(() => {
+        // Fallback to app info
+        if (navigator.userAgent.includes('Xiaomi')) {
+            alert("कृपया manually जाएं:\nSettings > Apps > Manage apps > Chrome > Permissions");
+        }
+    }, 1000);
+}
