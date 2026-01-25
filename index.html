@@ -1,178 +1,1607 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <title>Miya – AI GM Assistant</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <style>
-    body {
-      margin: 0;
-      background: #0b0b0b;
-      color: #fff;
-      font-family: system-ui, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .ai-box {
-      width: 360px;
-      background: #141414;
-      border-radius: 16px;
-      padding: 16px;
-      box-shadow: 0 0 30px rgba(0,255,255,0.1);
-    }
-
-    .avatar {
-      text-align: center;
-      font-size: 72px;
-    }
-
-    .status {
-      text-align: center;
-      font-size: 14px;
-      opacity: 0.7;
-      margin-bottom: 10px;
-    }
-
-    .chat {
-      height: 220px;
-      overflow-y: auto;
-      background: #0f0f0f;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-
-    .msg {
-      margin-bottom: 8px;
-    }
-
-    .miya {
-      color: #7fffd4;
-    }
-
-    .you {
-      color: #ffd700;
-    }
-
-    .controls {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    input {
-      flex: 1;
-      padding: 8px;
-      border-radius: 8px;
-      border: none;
-      outline: none;
-    }
-
-    button {
-      padding: 8px 12px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #00ffd5;
-      color: #000;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌸 साकुरा AI असिस्टेंट - WORKING</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        /* ===== MAIN CONTAINER ===== */
+        .container {
+            max-width: 100%;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #8a2be2, #6a1bb3);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8a2be2;
+            font-size: 20px;
+        }
+        
+        .logo-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .logo-text p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        /* ===== ANIME AVATAR ===== */
+        .avatar-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px solid #475569;
+        }
+        
+        .avatar-container {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 15px;
+            position: relative;
+        }
+        
+        .avatar-face {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff4081, #8a2be2);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid white;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .eyes {
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .eye {
+            width: 25px;
+            height: 35px;
+            background: #000;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pupil {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border-radius: 50%;
+            top: 8px;
+            left: 6px;
+        }
+        
+        .mouth {
+            position: absolute;
+            bottom: 35%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 20px;
+            background: #ff006e;
+            border-radius: 0 0 35px 35px;
+            transition: all 0.3s;
+        }
+        
+        .mouth.talking {
+            animation: talk 0.5s infinite;
+        }
+        
+        .hair {
+            position: absolute;
+            top: -25px;
+            left: -10px;
+            right: -10px;
+            height: 60px;
+            background: #8a2be2;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            border: 1px solid #475569;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4caf50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        /* ===== VOICE CONTROLS ===== */
+        .voice-section {
+            text-align: center;
+            margin: 15px 0;
+        }
+        
+        .voice-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8a2be2, #6a1bb3);
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(138, 43, 226, 0.4);
+            position: relative;
+            transition: all 0.3s;
+            margin-bottom: 10px;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .voice-btn.active {
+            background: linear-gradient(135deg, #ff4081, #ff006e);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid #8a2be2;
+            border-radius: 50%;
+            animation: ringPulse 2s infinite;
+            opacity: 0;
+        }
+        
+        .voice-feedback {
+            background: rgba(0, 188, 212, 0.1);
+            border: 1px solid #00bcd4;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px auto;
+            max-width: 300px;
+            display: none;
+        }
+        
+        .voice-feedback.active {
+            display: block;
+        }
+        
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            height: 40px;
+            margin: 10px 0;
+        }
+        
+        .bar {
+            width: 5px;
+            background: linear-gradient(to top, #00bcd4, #8a2be2);
+            border-radius: 3px;
+            animation: soundWave 1.5s infinite ease-in-out;
+        }
+        
+        .bar:nth-child(2) { animation-delay: 0.1s; }
+        .bar:nth-child(3) { animation-delay: 0.2s; }
+        .bar:nth-child(4) { animation-delay: 0.3s; }
+        .bar:nth-child(5) { animation-delay: 0.4s; }
+        
+        /* ===== CHAT SECTION ===== */
+        .chat-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #475569;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #475569;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .message {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            min-width: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8a2be2, #6a1bb3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+        
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #ff4081, #ff006e);
+        }
+        
+        .message-content {
+            background: rgba(255,255,255,0.1);
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            border: 1px solid #475569;
+        }
+        
+        .message.user .message-content {
+            background: rgba(138, 43, 226, 0.3);
+            border-color: #8a2be2;
+        }
+        
+        .message-time {
+            display: block;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 5px;
+            text-align: right;
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #475569;
+            border-radius: 10px;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+        }
+        
+        .chat-input input:focus {
+            outline: none;
+            border-color: #8a2be2;
+        }
+        
+        .send-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8a2be2, #6a1bb3);
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* ===== QUICK ACTIONS ===== */
+        .actions-section {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #475569;
+        }
+        
+        .actions-section h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 16px;
+        }
+        
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #475569;
+            border-radius: 10px;
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            background: rgba(138, 43, 226, 0.2);
+            border-color: #8a2be2;
+            transform: translateY(-3px);
+        }
+        
+        .action-btn i {
+            font-size: 20px;
+            color: #8a2be2;
+        }
+        
+        .action-btn span {
+            font-size: 11px;
+            font-weight: 500;
+        }
+        
+        /* ===== CALL ALERT ===== */
+        .call-alert {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid #00bcd4;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .call-alert.active {
+            display: block;
+        }
+        
+        .call-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .caller-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .caller-info h4 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .caller-info p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+        
+        .call-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .call-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .accept-call {
+            background: #4caf50;
+            color: white;
+        }
+        
+        .decline-call {
+            background: #f44336;
+            color: white;
+        }
+        
+        .call-note {
+            font-size: 12px;
+            color: #ff9800;
+            margin-top: 15px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+        
+        /* ===== REMINDER MODAL ===== */
+        .reminder-modal {
+            background: rgba(30, 41, 59, 0.95);
+            border-radius: 20px;
+            padding: 20px;
+            border: 2px solid #ff9800;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .reminder-modal.active {
+            display: block;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+        }
+        
+        .save-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #8a2be2, #6a1bb3);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        /* ===== SYSTEM TRAY ===== */
+        .system-tray {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 15px;
+            padding: 12px 15px;
+            border: 1px solid #475569;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 12px;
+        }
+        
+        .tray-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #94a3b8;
+        }
+        
+        .tray-item i {
+            color: #8a2be2;
+        }
+        
+        /* ===== ANIMATIONS ===== */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        @keyframes ringPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        @keyframes soundWave {
+            0%, 100% { height: 10px; }
+            50% { height: 25px; }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes talk {
+            0%, 100% { height: 20px; }
+            50% { height: 10px; }
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .container { padding: 8px; }
+            .avatar-container { width: 120px; height: 120px; }
+            .voice-btn { width: 60px; height: 60px; font-size: 20px; }
+            .action-grid { grid-template-columns: repeat(2, 1fr); }
+            .chat-section { height: 250px; }
+            .system-tray { flex-direction: column; gap: 5px; }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 3px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #8a2be2;
+            border-radius: 3px;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>साकुरा AI असिस्टेंट</h1>
+                    <p>तुम्हारी मदद के लिए हमेशा तैयार</p>
+                </div>
+            </div>
+        </div>
 
-<div class="ai-box">
-  <div class="avatar">🧠</div>
-  <div class="status" id="status">Miya ready hai</div>
+        <!-- Avatar Section -->
+        <div class="avatar-section">
+            <div class="avatar-container">
+                <div class="hair"></div>
+                <div class="avatar-face">
+                    <div class="eyes">
+                        <div class="eye"><div class="pupil"></div></div>
+                        <div class="eye"><div class="pupil"></div></div>
+                    </div>
+                    <div class="mouth" id="mouth"></div>
+                </div>
+            </div>
+            <div class="status">
+                <div class="status-dot" id="status-dot"></div>
+                <span class="status-text" id="status-text">तैयार हूँ</span>
+            </div>
+        </div>
 
-  <div class="chat" id="chat">
-    <div class="msg miya">
-      <b>Miya:</b> Namaste. Mai Miya hoon.  
-      Game master aur tumhari assistant.  
-      Jab chaaho bolo.
+        <!-- Voice Controls -->
+        <div class="voice-section">
+            <button class="voice-btn" id="voice-btn">
+                <i class="fas fa-microphone"></i>
+                <div class="pulse-ring"></div>
+            </button>
+            
+            <div class="voice-feedback" id="voice-feedback">
+                <div class="visualizer">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+                <p id="listening-text">सुन रही हूँ... बोलो!</p>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+            <div class="chat-header">
+                <h3><i class="fas fa-comments"></i> बातचीत</h3>
+                <button class="icon-btn" id="clear-chat" title="Clear Chat">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <p>नमस्ते! मैं साकुरा हूँ, तुम्हारी AI असिस्टेंट। मैं तुम्हारी voice सुन सकती हूँ और बोल भी सकती हूँ। Microphone बटन दबाकर बोलो या type करो!</p>
+                        <span class="message-time">अभी</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chat-input">
+                <input type="text" id="text-input" placeholder="यहाँ type करो...">
+                <button class="send-btn" id="send-btn">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="actions-section">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="action-grid">
+                <button class="action-btn" data-action="reminder">
+                    <i class="fas fa-bell"></i>
+                    <span>Reminder</span>
+                </button>
+                <button class="action-btn" data-action="weather">
+                    <i class="fas fa-cloud-sun"></i>
+                    <span>मौसम</span>
+                </button>
+                <button class="action-btn" data-action="time">
+                    <i class="fas fa-clock"></i>
+                    <span>समय</span>
+                </button>
+                <button class="action-btn" data-action="call">
+                    <i class="fas fa-phone"></i>
+                    <span>Test Call</span>
+                </button>
+                <button class="action-btn" data-action="joke">
+                    <i class="fas fa-laugh"></i>
+                    <span>जोक</span>
+                </button>
+                <button class="action-btn" data-action="help">
+                    <i class="fas fa-question-circle"></i>
+                    <span>Help</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Call Alert -->
+        <div class="call-alert" id="call-alert">
+            <div class="call-header">
+                <div class="caller-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="caller-info">
+                    <h4 id="caller-name">मम्मी</h4>
+                    <p id="caller-number">+91 98765 43210</p>
+                </div>
+            </div>
+            <div class="call-actions">
+                <button class="call-btn accept-call" id="answer-call">
+                    <i class="fas fa-phone"></i> Answer
+                </button>
+                <button class="call-btn decline-call" id="decline-call">
+                    <i class="fas fa-phone-slash"></i> Decline
+                </button>
+            </div>
+            <p class="call-note">
+                <i class="fas fa-info-circle"></i> यह एक simulated call है। Real call handle करने के लिए native app चाहिए।
+            </p>
+        </div>
+
+        <!-- Reminder Modal -->
+        <div class="reminder-modal" id="reminder-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell"></i> Reminder सेट करें</h3>
+                <button class="icon-btn" id="close-reminder">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="reminder-text">क्या याद दिलाऊं?</label>
+                    <input type="text" id="reminder-text" placeholder="जैसे: पानी पीना">
+                </div>
+                <div class="form-group">
+                    <label for="reminder-time">कितने मिनट बाद?</label>
+                    <input type="number" id="reminder-time" min="1" max="1440" value="5">
+                </div>
+                <button class="save-btn" id="save-reminder">
+                    <i class="fas fa-save"></i> Reminder सेट करें
+                </button>
+            </div>
+        </div>
+
+        <!-- System Tray -->
+        <div class="system-tray">
+            <div class="tray-item">
+                <i class="fas fa-microchip"></i>
+                <span>Status: <span id="system-status">Ready</span></span>
+            </div>
+            <div class="tray-item">
+                <i class="fas fa-clock"></i>
+                <span id="current-time">Loading...</span>
+            </div>
+            <div class="tray-item">
+                <i class="fas fa-bell"></i>
+                <span>Reminders: <span id="reminder-count">0</span></span>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="controls">
-    <input id="input" placeholder="Yahan likho ya mic dabao..." />
-    <button onclick="send()">Send</button>
-    <button onclick="listen()">🎤</button>
-  </div>
-</div>
+    <!-- Complete JavaScript Code -->
+    <script>
+        // ============================================
+        // COMPLETE WORKING AI ASSISTANT
+        // ============================================
 
-<script>
-  const chat = document.getElementById("chat");
-  const status = document.getElementById("status");
-  const input = document.getElementById("input");
-
-  const synth = window.speechSynthesis;
-
-  function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.lang = "hi-IN";
-    utter.rate = 0.95;
-    synth.speak(utter);
-  }
-
-  function addMsg(who, text) {
-    const div = document.createElement("div");
-    div.className = "msg " + (who === "Miya" ? "miya" : "you");
-    div.innerHTML = `<b>${who}:</b> ${text}`;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-  }
-
-  function miyaReply(userText) {
-    let reply = "Samjha. Aage bolo.";
-
-    if (userText.includes("time")) {
-      reply = `Abhi samay hai ${new Date().toLocaleTimeString("hi-IN")}`;
-    }
-    else if (userText.includes("ready")) {
-      reply = "Mai ready hoon. Alert mode active.";
-    }
-    else if (userText.includes("hello") || userText.includes("namaste")) {
-      reply = "Namaste. Kaam batao.";
-    }
-    else if (userText.includes("kaun ho")) {
-      reply = "Mai Miya hoon. Tumhari AI game master aur guide.";
-    }
-
-    addMsg("Miya", reply);
-    speak(reply);
-  }
-
-  function send() {
-    const text = input.value.trim();
-    if (!text) return;
-    addMsg("Tum", text);
-    input.value = "";
-    miyaReply(text.toLowerCase());
-  }
-
-  function listen() {
-    if (!("webkitSpeechRecognition" in window)) {
-      alert("Voice support nahi hai is browser me.");
-      return;
-    }
-
-    const rec = new webkitSpeechRecognition();
-    rec.lang = "hi-IN";
-    rec.onstart = () => status.textContent = "Sun rahi hoon...";
-    rec.onend = () => status.textContent = "Miya ready hai";
-    rec.onresult = e => {
-      const text = e.results[0][0].transcript;
-      addMsg("Tum", text);
-      miyaReply(text.toLowerCase());
-    };
-    rec.start();
-  }
-</script>
-
+        class SakuraAssistant {
+            constructor() {
+                this.isListening = false;
+                this.isSpeaking = false;
+                this.recognition = null;
+                this.reminders = new Map();
+                this.settings = {
+                    voiceSpeed: 1.0,
+                    autoSpeak: true,
+                    saveHistory: true
+                };
+                
+                this.init();
+            }
+            
+            init() {
+                console.log('🌸 साकुरा AI असिस्टेंट शुरू हो रही है...');
+                
+                // Get DOM elements
+                this.elements = {
+                    // Buttons
+                    voiceBtn: document.getElementById('voice-btn'),
+                    sendBtn: document.getElementById('send-btn'),
+                    clearChat: document.getElementById('clear-chat'),
+                    
+                    // Input
+                    textInput: document.getElementById('text-input'),
+                    
+                    // Containers
+                    chatMessages: document.getElementById('chat-messages'),
+                    voiceFeedback: document.getElementById('voice-feedback'),
+                    listeningText: document.getElementById('listening-text'),
+                    callAlert: document.getElementById('call-alert'),
+                    reminderModal: document.getElementById('reminder-modal'),
+                    
+                    // Status
+                    statusDot: document.getElementById('status-dot'),
+                    statusText: document.getElementById('status-text'),
+                    systemStatus: document.getElementById('system-status'),
+                    currentTime: document.getElementById('current-time'),
+                    reminderCount: document.getElementById('reminder-count'),
+                    
+                    // Avatar
+                    mouth: document.getElementById('mouth'),
+                    
+                    // Call
+                    callerName: document.getElementById('caller-name'),
+                    callerNumber: document.getElementById('caller-number'),
+                    answerCall: document.getElementById('answer-call'),
+                    declineCall: document.getElementById('decline-call'),
+                    
+                    // Reminder
+                    reminderText: document.getElementById('reminder-text'),
+                    reminderTime: document.getElementById('reminder-time'),
+                    saveReminder: document.getElementById('save-reminder'),
+                    closeReminder: document.getElementById('close-reminder')
+                };
+                
+                // Bind events
+                this.bindEvents();
+                
+                // Initialize systems
+                this.initVoice();
+                this.initTime();
+                this.checkReminders();
+                
+                // Test voice immediately
+                this.testVoice();
+                
+                console.log('✅ साकुरा तैयार है!');
+            }
+            
+            bindEvents() {
+                // Voice button
+                this.elements.voiceBtn.addEventListener('click', () => this.toggleVoice());
+                
+                // Send button
+                this.elements.sendBtn.addEventListener('click', () => this.sendMessage());
+                this.elements.textInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.sendMessage();
+                });
+                
+                // Clear chat
+                this.elements.clearChat.addEventListener('click', () => this.clearChat());
+                
+                // Quick actions
+                document.querySelectorAll('.action-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const action = btn.dataset.action;
+                        this.handleAction(action);
+                    });
+                });
+                
+                // Call actions
+                this.elements.answerCall.addEventListener('click', () => this.answerCall());
+                this.elements.declineCall.addEventListener('click', () => this.declineCall());
+                
+                // Reminder actions
+                this.elements.saveReminder.addEventListener('click', () => this.saveReminder());
+                this.elements.closeReminder.addEventListener('click', () => this.hideReminderModal());
+                
+                // Click anywhere to initialize voice (Chrome fix)
+                document.addEventListener('click', () => {
+                    this.voiceInitialized = true;
+                });
+            }
+            
+            // ===== VOICE SYSTEM =====
+            initVoice() {
+                // Check if browser supports speech recognition
+                if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+                    this.showMessage('⚠️ Voice recognition not supported. Please use Chrome or Edge.', 'ai');
+                    return;
+                }
+                
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                this.recognition = new SpeechRecognition();
+                
+                // Simple configuration that works in Chrome
+                this.recognition.continuous = false;
+                this.recognition.interimResults = false;
+                this.recognition.lang = 'hi-IN';
+                this.recognition.maxAlternatives = 1;
+                
+                // Event handlers
+                this.recognition.onstart = () => {
+                    console.log('🎤 Listening started');
+                    this.isListening = true;
+                    this.elements.voiceBtn.classList.add('active');
+                    this.elements.voiceFeedback.classList.add('active');
+                    this.elements.listeningText.textContent = 'सुन रही हूँ... बोलो!';
+                    this.updateStatus('सुन रही हूँ', 'warning');
+                    this.elements.mouth.classList.add('talking');
+                };
+                
+                this.recognition.onresult = (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    console.log('🗣️ Recognized:', transcript);
+                    
+                    this.showMessage(transcript, 'user');
+                    this.processCommand(transcript);
+                    
+                    // Auto-stop after getting result
+                    setTimeout(() => {
+                        this.stopListening();
+                    }, 500);
+                };
+                
+                this.recognition.onerror = (event) => {
+                    console.error('❌ Speech error:', event.error);
+                    
+                    let errorMsg = '';
+                    switch(event.error) {
+                        case 'no-speech':
+                            errorMsg = 'मैंने कुछ नहीं सुना। फिर से बोलो!';
+                            break;
+                        case 'audio-capture':
+                            errorMsg = 'Microphone नहीं मिला।';
+                            break;
+                        case 'not-allowed':
+                            errorMsg = 'Microphone permission denied।';
+                            this.showPermissionGuide();
+                            break;
+                        default:
+                            errorMsg = 'Voice error। फिर से try करो!';
+                    }
+                    
+                    this.showMessage(errorMsg, 'ai', true);
+                    this.stopListening();
+                };
+                
+                this.recognition.onend = () => {
+                    console.log('🎤 Listening ended');
+                    this.isListening = false;
+                    this.elements.voiceBtn.classList.remove('active');
+                    this.elements.voiceFeedback.classList.remove('active');
+                    this.updateStatus('तैयार हूँ', 'success');
+                    this.elements.mouth.classList.remove('talking');
+                };
+            }
+            
+            testVoice() {
+                // Test speech synthesis
+                setTimeout(() => {
+                    if (window.speechSynthesis) {
+                        this.speak('Voice system test successful! I am ready to help you.');
+                    }
+                }, 2000);
+            }
+            
+            toggleVoice() {
+                if (this.isListening) {
+                    this.stopListening();
+                } else {
+                    this.startListening();
+                }
+            }
+            
+            startListening() {
+                if (!this.recognition) {
+                    this.showMessage('Voice recognition not available. Please use Chrome or Edge.', 'ai');
+                    return;
+                }
+                
+                try {
+                    this.recognition.start();
+                } catch (error) {
+                    console.error('Start error:', error);
+                    this.showMessage('Please allow microphone access first.', 'ai', true);
+                    
+                    // Try again after showing message
+                    setTimeout(() => {
+                        try {
+                            this.recognition.start();
+                        } catch (e) {
+                            // Ignore second error
+                        }
+                    }, 1000);
+                }
+            }
+            
+            stopListening() {
+                if (this.recognition && this.isListening) {
+                    try {
+                        this.recognition.stop();
+                    } catch (error) {
+                        // Ignore stop errors
+                    }
+                }
+            }
+            
+            speak(text, callback) {
+                if (!window.speechSynthesis || this.isSpeaking) return;
+                
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = this.settings.voiceSpeed || 1.0;
+                utterance.pitch = 1.1;
+                utterance.volume = 1;
+                utterance.lang = 'hi-IN';
+                
+                // Try to get Hindi voice
+                const voices = window.speechSynthesis.getVoices();
+                const hindiVoice = voices.find(v => v.lang.includes('hi'));
+                if (hindiVoice) utterance.voice = hindiVoice;
+                
+                utterance.onstart = () => {
+                    this.isSpeaking = true;
+                    this.elements.mouth.classList.add('talking');
+                    this.updateStatus('बोल रही हूँ', 'info');
+                };
+                
+                utterance.onend = () => {
+                    this.isSpeaking = false;
+                    this.elements.mouth.classList.remove('talking');
+                    this.updateStatus('तैयार हूँ', 'success');
+                    if (callback) callback();
+                };
+                
+                utterance.onerror = (event) => {
+                    console.error('Speech error:', event);
+                    this.isSpeaking = false;
+                    this.elements.mouth.classList.remove('talking');
+                    this.updateStatus('तैयार हूँ', 'success');
+                    if (callback) callback();
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            }
+            
+            showPermissionGuide() {
+                const guide = `🔧 **Microphone Permission Guide:**
+                
+1. Click the lock icon 🔒 in address bar
+2. Find "Microphone" in permissions list
+3. Change from "Block" to "Allow"
+4. Refresh the page
+                
+OR
+                
+1. Chrome Settings → Privacy and Security
+2. Site Settings → Microphone
+3. Allow this site
+                
+Note: HTTPS required for microphone access.`;
+                
+                this.showMessage(guide, 'ai', true);
+            }
+            
+            // ===== MESSAGE SYSTEM =====
+            showMessage(text, sender, speak = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.className = 'message-avatar';
+                avatarDiv.innerHTML = sender === 'ai' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
+                const textPara = document.createElement('p');
+                textPara.textContent = text;
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'message-time';
+                timeSpan.textContent = this.getCurrentTime();
+                
+                contentDiv.appendChild(textPara);
+                contentDiv.appendChild(timeSpan);
+                
+                messageDiv.appendChild(avatarDiv);
+                messageDiv.appendChild(contentDiv);
+                
+                this.elements.chatMessages.appendChild(messageDiv);
+                this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+                
+                // Speak if it's an AI message
+                if (sender === 'ai' && speak && this.settings.autoSpeak) {
+                    this.speak(text);
+                }
+            }
+            
+            sendMessage() {
+                const text = this.elements.textInput.value.trim();
+                if (!text) return;
+                
+                this.showMessage(text, 'user');
+                this.elements.textInput.value = '';
+                this.processCommand(text);
+            }
+            
+            processCommand(text) {
+                const input = text.toLowerCase();
+                
+                // Greetings
+                if (this.isGreeting(input)) {
+                    this.handleGreeting();
+                    return;
+                }
+                
+                // Time
+                if (input.includes('time') || input.includes('समय') || input.includes('कितना बजा')) {
+                    this.tellTime();
+                    return;
+                }
+                
+                // Date
+                if (input.includes('date') || input.includes('तारीख') || input.includes('आज क्या दिन')) {
+                    this.tellDate();
+                    return;
+                }
+                
+                // Weather
+                if (input.includes('weather') || input.includes('मौसम')) {
+                    this.tellWeather();
+                    return;
+                }
+                
+                // Joke
+                if (input.includes('joke') || input.includes('जोक') || input.includes('चुटकुला')) {
+                    this.tellJoke();
+                    return;
+                }
+                
+                // Reminder
+                if (input.includes('remind') || input.includes('याद दिलाओ') || input.includes('रिमाइंडर')) {
+                    this.showReminderModal();
+                    return;
+                }
+                
+                // Call
+                if (input.includes('call') || input.includes('कॉल') || input.includes('फोन')) {
+                    this.simulateCall();
+                    return;
+                }
+                
+                // Help
+                if (input.includes('help') || input.includes('मदद')) {
+                    this.showHelp();
+                    return;
+                }
+                
+                // Thank you
+                if (input.includes('thank') || input.includes('धन्यवाद')) {
+                    this.showMessage("You're welcome! I'm always happy to help.", 'ai', true);
+                    return;
+                }
+                
+                // Default response
+                this.generateResponse(input);
+            }
+            
+            isGreeting(text) {
+                const greetings = ['hello', 'hi', 'hey', 'नमस्ते', 'हाय', 'कैसे हो', 'कैसी हो'];
+                return greetings.some(greet => text.includes(greet));
+            }
+            
+            handleGreeting() {
+                const hour = new Date().getHours();
+                let greeting = '';
+                
+                if (hour < 12) greeting = 'शुभ प्रभात! ☀️';
+                else if (hour < 18) greeting = 'नमस्ते! 🌤️';
+                else greeting = 'शुभ संध्या! 🌙';
+                
+                const responses = [
+                    `${greeting} मैं साकुरा हूँ! तुम कैसे हो?`,
+                    `${greeting} तुम्हें देखकर अच्छा लगा!`,
+                    `${greeting} मैं तुम्हारी wait कर रही थी!`
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                this.showMessage(response, 'ai', true);
+            }
+            
+            tellTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('hi-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                this.showMessage(`अभी समय है: ${timeString}`, 'ai', true);
+            }
+            
+            tellDate() {
+                const now = new Date();
+                const dateString = now.toLocaleDateString('hi-IN', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                this.showMessage(`आज की तारीख है: ${dateString}`, 'ai', true);
+            }
+            
+            tellWeather() {
+                const weathers = [
+                    "☀️ आज मौसम बहुत अच्छा है! धूप निकली है, temperature 25-30°C है।",
+                    "🌤️ आज थोड़ी clouds हैं, temperature 22-28°C है।",
+                    "🌧️ आज बारिश हो सकती है, umbrella साथ ले जाना!",
+                    "❄️ आज ठंड है, warm clothes पहनना!"
+                ];
+                
+                const weather = weathers[Math.floor(Math.random() * weathers.length)];
+                this.showMessage(weather, 'ai', true);
+            }
+            
+            tellJoke() {
+                const jokes = [
+                    "क्या आप जानते हैं किताबें क्यों डरती हैं? क्योंकि उनमें chapter होते हैं! 📚",
+                    "टीचर: बताओ 2 और 2 कितने होते हैं? स्टूडेंट: 4! टीचर: Good! स्टूडेंट: Good नहीं, perfect! 😄",
+                    "पापा: बेटा तुम्हारी उंगलियाँ क्यों पीली हैं? बेटा: मैंने सूरज को पकड़ने की कोशिश की थी! 🌞"
+                ];
+                
+                const joke = jokes[Math.floor(Math.random() * jokes.length)];
+                this.showMessage(joke, 'ai', true);
+            }
+            
+            generateResponse(input) {
+                const responses = [
+                    "मैं समझ गई! तुम और कुछ पूछना चाहते हो? 🤔",
+                    "Interesting! Tell me more about it! 💬",
+                    "मैं तुम्हारी बात समझ रही हूँ! क्या मैं और help कर सकती हूँ? 💕",
+                    "अच्छा! मैं note कर लेती हूँ! 📝"
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                this.showMessage(response, 'ai', true);
+            }
+            
+            // ===== QUICK ACTIONS =====
+            handleAction(action) {
+                switch(action) {
+                    case 'reminder':
+                        this.showReminderModal();
+                        break;
+                    case 'weather':
+                        this.tellWeather();
+                        break;
+                    case 'time':
+                        this.tellTime();
+                        break;
+                    case 'call':
+                        this.simulateCall();
+                        break;
+                    case 'joke':
+                        this.tellJoke();
+                        break;
+                    case 'help':
+                        this.showHelp();
+                        break;
+                }
+            }
+            
+            // ===== CALL SYSTEM =====
+            simulateCall() {
+                const callers = [
+                    { name: "मम्मी", number: "+91 98765 43210" },
+                    { name: "पापा", number: "+91 98765 43211" },
+                    { name: "भैया", number: "+91 98765 43212" },
+                    { name: "दोस्त", number: "+91 98765 43213" }
+                ];
+                
+                const caller = callers[Math.floor(Math.random() * callers.length)];
+                this.showCallAlert(caller);
+            }
+            
+            showCallAlert(caller) {
+                this.elements.callerName.textContent = caller.name;
+                this.elements.callerNumber.textContent = caller.number;
+                this.elements.callAlert.classList.add('active');
+                
+                // Announce call
+                this.speak(`Incoming call from ${caller.name}. This is a simulation.`);
+                
+                // Auto-decline after 30 seconds
+                setTimeout(() => {
+                    if (this.elements.callAlert.classList.contains('active')) {
+                        this.declineCall();
+                    }
+                }, 30000);
+            }
+            
+            answerCall() {
+                this.elements.callAlert.classList.remove('active');
+                this.showMessage("Call answered. This is a simulated call.", 'ai', true);
+            }
+            
+            declineCall() {
+                this.elements.callAlert.classList.remove('active');
+                this.showMessage("Call declined. This was a simulation.", 'ai', true);
+            }
+            
+            // ===== REMINDER SYSTEM =====
+            showReminderModal() {
+                this.elements.reminderModal.classList.add('active');
+            }
+            
+            hideReminderModal() {
+                this.elements.reminderModal.classList.remove('active');
+                this.elements.reminderText.value = '';
+                this.elements.reminderTime.value = '5';
+            }
+            
+            saveReminder() {
+                const text = this.elements.reminderText.value.trim();
+                const minutes = parseInt(this.elements.reminderTime.value);
+                
+                if (!text) {
+                    this.showMessage("Please enter reminder text.", 'ai', true);
+                    return;
+                }
+                
+                if (isNaN(minutes) || minutes < 1) {
+                    this.showMessage("Please enter valid time in minutes.", 'ai', true);
+                    return;
+                }
+                
+                const reminderId = Date.now().toString();
+                this.reminders.set(reminderId, {
+                    id: reminderId,
+                    text: text,
+                    minutes: minutes,
+                    time: Date.now() + (minutes * 60000)
+                });
+                
+                this.updateReminderCount();
+                this.hideReminderModal();
+                
+                this.showMessage(`Reminder set! I'll remind you about "${text}" in ${minutes} minutes.`, 'ai', true);
+                
+                // Schedule reminder
+                setTimeout(() => {
+                    this.triggerReminder(reminderId);
+                }, minutes * 60000);
+            }
+            
+            triggerReminder(reminderId) {
+                const reminder = this.reminders.get(reminderId);
+                if (!reminder) return;
+                
+                const message = `⏰ REMINDER: ${reminder.text}`;
+                this.showMessage(message, 'ai', true);
+                
+                this.reminders.delete(reminderId);
+                this.updateReminderCount();
+            }
+            
+            checkReminders() {
+                const now = Date.now();
+                this.reminders.forEach((reminder, id) => {
+                    if (reminder.time <= now) {
+                        this.triggerReminder(id);
+                    }
+                });
+                
+                // Check every minute
+                setTimeout(() => this.checkReminders(), 60000);
+            }
+            
+            updateReminderCount() {
+                this.elements.reminderCount.textContent = this.reminders.size;
+            }
+            
+            // ===== HELP SYSTEM =====
+            showHelp() {
+                const help = `🆘 **साकुरा AI असिस्टेंट - Help Guide**
+                
+**Voice Commands:**
+• "नमस्ते" या "हाय" - Greeting
+• "कितना बजा?" - Current time
+• "आज का मौसम कैसा है?" - Weather
+• "एक जोक सुनाओ" - Tell a joke
+• "रिमाइंडर सेट करो" - Set reminder
+• "टेस्ट कॉल" - Simulate call
+                
+**Quick Actions:**
+• Reminder - Set reminders
+• मौसम - Weather update
+• समय - Current time
+• Test Call - Simulated call
+• जोक - Funny jokes
+• Help - This guide
+                
+**Note:** Use Chrome/Edge for best voice experience.`;
+                
+                this.showMessage(help, 'ai', true);
+            }
+            
+            // ===== UTILITY FUNCTIONS =====
+            updateStatus(text, type = 'success') {
+                this.elements.statusText.textContent = text;
+                this.elements.systemStatus.textContent = text;
+                
+                // Update dot color
+                const colors = {
+                    success: '#4caf50',
+                    warning: '#ff9800',
+                    info: '#2196f3',
+                    danger: '#f44336'
+                };
+                
+                this.elements.statusDot.style.backgroundColor = colors[type] || colors.success;
+            }
+            
+            initTime() {
+                this.updateClock();
+                setInterval(() => this.updateClock(), 60000);
+            }
+            
+            updateClock() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('hi-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                
+                this.elements.currentTime.textContent = timeString;
+            }
+            
+            getCurrentTime() {
+                const now = new Date();
+                return now.toLocaleTimeString('hi-IN', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+            
+            clearChat() {
+                if (confirm('Clear all chat messages?')) {
+                    this.elements.chatMessages.innerHTML = '';
+                    this.showMessage("Chat cleared. How can I help you?", 'ai', true);
+                }
+            }
+            
+            // Browser compatibility check
+            checkCompatibility() {
+                const compatibility = {
+                    speechRecognition: !!(window.SpeechRecognition || window.webkitSpeechRecognition),
+                    speechSynthesis: !!window.speechSynthesis,
+                    isChrome: navigator.userAgent.includes('Chrome'),
+                    isEdge: navigator.userAgent.includes('Edg'),
+                    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                };
+                
+                console.log('Browser Compatibility:', compatibility);
+                
+                if (!compatibility.speechRecognition) {
+                    this.showMessage("⚠️ Voice recognition requires Chrome or Edge browser.", 'ai');
+                }
+                
+                return compatibility;
+            }
+        }
+        
+        // ============================================
+        // INITIALIZE THE ASSISTANT
+        // ============================================
+        
+        // Wait for page to load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize assistant
+            window.sakura = new SakuraAssistant();
+            
+            // Check browser compatibility
+            window.sakura.checkCompatibility();
+            
+            // Auto-test voice after 3 seconds
+            setTimeout(() => {
+                // Test if voice works
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+                }
+            }, 3000);
+            
+            // Show welcome message after 1 second
+            setTimeout(() => {
+                window.sakura.showMessage(
+                    "मैं साकुरा हूँ! मैं voice सुन सकती हूँ और बोल भी सकती हूँ। " +
+                    "Microphone बटन दबाकर बोलो या type करके message भेजो!",
+                    'ai',
+                    true
+                );
+            }, 1000);
+        });
+        
+        // Fix for Chrome voice issues
+        if (navigator.userAgent.includes('Chrome')) {
+            // Request microphone permission on first click
+            document.addEventListener('click', () => {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({ audio: true })
+                        .then(stream => {
+                            stream.getTracks().forEach(track => track.stop());
+                            console.log('Microphone permission granted');
+                        })
+                        .catch(() => {
+                            console.log('Microphone permission will be requested when needed');
+                        });
+                }
+            }, { once: true });
+        }
+        
+        // Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Register service worker inline
+                const swCode = `
+                    self.addEventListener('install', (event) => {
+                        self.skipWaiting();
+                    });
+                    self.addEventListener('activate', (event) => {
+                        console.log('Service Worker activated');
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const url = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(url)
+                    .then(() => console.log('Service Worker registered'))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
+    </script>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/manifest+json,{
+        \"name\": \"साकुरा AI असिस्टेंट\",
+        \"short_name\": \"साकुरा\",
+        \"description\": \"Your personal AI assistant\",
+        \"start_url\": \".\",
+        \"display\": \"standalone\",
+        \"background_color\": \"#0f172a\",
+        \"theme_color\": \"#8a2be2\",
+        \"icons\": [{
+            \"src\": \"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>\",
+            \"sizes\": \"any\",
+            \"type\": \"image/svg+xml\"
+        }]
+    }">
 </body>
-</html>
+  </html>
