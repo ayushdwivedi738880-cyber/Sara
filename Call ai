@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Aura Assistant - Voice &amp; Personality</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f3f4f5",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed-dim": "#76d6d5",
+                      "background": "#f8f9fa",
+                      "tertiary-fixed-dim": "#cfbcff",
+                      "on-primary-fixed-variant": "#00429c",
+                      "surface-container-lowest": "#ffffff",
+                      "on-background": "#191c1d",
+                      "on-tertiary-container": "#c6b0ff",
+                      "secondary-fixed": "#93f2f2",
+                      "on-error": "#ffffff",
+                      "on-primary-container": "#a1bbff",
+                      "on-secondary-container": "#006e6e",
+                      "inverse-primary": "#b0c6ff",
+                      "surface-container-high": "#e7e8e9",
+                      "secondary": "#006a6a",
+                      "outline-variant": "#c3c6d4",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed": "#e9ddff",
+                      "on-surface": "#191c1d",
+                      "inverse-on-surface": "#f0f1f2",
+                      "primary": "#003178",
+                      "on-secondary": "#ffffff",
+                      "tertiary-container": "#5a00d9",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed": "#001945",
+                      "surface-dim": "#d9dadb",
+                      "on-surface-variant": "#434652",
+                      "on-error-container": "#93000a",
+                      "primary-fixed-dim": "#b0c6ff",
+                      "surface": "#f8f9fa",
+                      "surface-tint": "#2b5bb5",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-secondary-fixed": "#002020",
+                      "on-secondary-fixed-variant": "#004f4f",
+                      "on-tertiary-fixed-variant": "#5400cc",
+                      "primary-container": "#0d47a1",
+                      "outline": "#737783",
+                      "primary-fixed": "#d9e2ff",
+                      "surface-bright": "#f8f9fa",
+                      "surface-container": "#edeeef",
+                      "surface-variant": "#e1e3e4",
+                      "inverse-surface": "#2e3132",
+                      "secondary-container": "#90efef",
+                      "on-tertiary-fixed": "#22005d",
+                      "on-primary": "#ffffff",
+                      "tertiary": "#40009f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "fontFamily": {
+                      "headline": ["Manrope"],
+                      "body": ["Inter"],
+                      "label": ["Inter"]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .signature-gradient {
+            background: linear-gradient(135deg, #003178 0%, #0d47a1 100%);
+        }
+        .glass-header {
+            backdrop-filter: blur(24px);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        input[type="range"]::-webkit-slider-runnable-track {
+            background: #e1e3e4;
+            height: 6px;
+            border-radius: 3px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            margin-top: -6px;
+            background-color: #003178;
+            height: 18px;
+            width: 18px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl flex items-center justify-between px-6 py-4 w-full z-50">
+<div class="flex items-center gap-3">
+<div class="p-2 rounded-xl hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors transition-all duration-300 ease-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined text-blue-900 dark:text-blue-200">account_circle</span>
+</div>
+<h1 class="text-lg font-black text-blue-900 dark:text-blue-50 font-manrope tracking-tight">Aura Assistant</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-xl hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors transition-all duration-300 ease-out active:scale-95 text-slate-500">
+<span class="material-symbols-outlined">settings_voice</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-5xl mx-auto">
+<!-- Hero Section Asymmetric -->
+<section class="mb-12 flex flex-col md:flex-row gap-8 items-start">
+<div class="w-full md:w-3/5">
+<span class="text-tertiary font-label font-semibold text-xs tracking-widest uppercase mb-3 block">Personality Lab</span>
+<h2 class="text-4xl font-headline font-extrabold text-on-surface tracking-tight mb-4">Sculpt Your Assistant's <br/><span class="text-primary italic">Digital Soul</span></h2>
+<p class="text-on-surface-variant max-w-md leading-relaxed">Customize the vocal frequency and behavioral traits of Aura to match your professional workflow or personal lifestyle.</p>
+</div>
+<div class="w-full md:w-2/5 relative h-48 rounded-3xl overflow-hidden shadow-2xl">
+<div class="absolute inset-0 signature-gradient opacity-20 z-10"></div>
+<img class="w-full h-full object-cover" data-alt="Abstract 3D sound waves in deep blue and violet colors representing a voice frequency spectrum with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyhN1wdgWqZ5nRo3Fc7yZXDVA4lrmVP1sYzPZcgvEWrjBmv_BkAx_o8ca-Lh4r32wgvVbEfc4gZ-Ufu1BaBNNj_ELiTP04leVRoJnDn9BNHdZ8c6HWOHp6869ikMLQVLOgASrtI-nrZQo1_3-URZejGdfbqIjKrciKBBkxsBS-VY8e4YLCwJqCIof6nzHviWq01s-LXeHU4uzI7MAqBlsNAD0UDyhfXSht0ZimFCJOvgQbz97TmDrXKRaCg9m2ykop7337bbh3uDA"/>
+<div class="absolute inset-0 flex items-center justify-center z-20">
+<div class="w-16 h-16 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center animate-pulse">
+<span class="material-symbols-outlined text-white text-3xl">graphic_eq</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Configuration -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<!-- Voice Profiles - Large Section -->
+<div class="md:col-span-8 bg-surface-container-low rounded-[2rem] p-8">
+<div class="flex justify-between items-center mb-8">
+<h3 class="text-xl font-headline font-bold">Voice Archetypes</h3>
+<div class="flex gap-2">
+<span class="text-xs text-on-surface-variant font-medium bg-surface-container-highest px-3 py-1 rounded-full">4 Options</span>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<!-- Profile Card: Active -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl border-2 border-primary ring-4 ring-primary/5 cursor-pointer group transition-all duration-300">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 rounded-xl signature-gradient flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">work</span>
+</div>
+<span class="material-symbols-outlined text-primary">check_circle</span>
+</div>
+<h4 class="font-headline font-bold text-lg mb-1">Professional</h4>
+<p class="text-sm text-on-surface-variant">Polished, articulate, and direct. Ideal for business and research tasks.</p>
+</div>
+<!-- Profile Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl hover:bg-surface-bright hover:scale-[1.02] cursor-pointer transition-all duration-300 border border-transparent">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 rounded-xl bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-secondary-container">sentiment_satisfied</span>
+</div>
+</div>
+<h4 class="font-headline font-bold text-lg mb-1">Friendly</h4>
+<p class="text-sm text-on-surface-variant">Warm, engaging, and empathetic tone for daily conversation.</p>
+</div>
+<!-- Profile Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl hover:bg-surface-bright hover:scale-[1.02] cursor-pointer transition-all duration-300 border border-transparent">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 rounded-xl bg-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+</div>
+<h4 class="font-headline font-bold text-lg mb-1">Concise</h4>
+<p class="text-sm text-on-surface-variant">Rapid responses focused purely on efficiency and brevity.</p>
+</div>
+<!-- Profile Card -->
+<div class="bg-surface-container-lowest p-6 rounded-2xl hover:bg-surface-bright hover:scale-[1.02] cursor-pointer transition-all duration-300 border border-transparent">
+<div class="flex justify-between mb-4">
+<div class="w-12 h-12 rounded-xl bg-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">language</span>
+</div>
+</div>
+<h4 class="font-headline font-bold text-lg mb-1">Sincere Hindi</h4>
+<p class="text-sm text-on-surface-variant">A warm, deeply expressive, and naturally conversational Hindi voice tailored for sincere interactions.</p>
+</div>
+</div>
+</div>
+<!-- Side Controls - Sliders -->
+<div class="md:col-span-4 space-y-6">
+<!-- Tuning Card -->
+<div class="bg-surface-container-lowest p-8 rounded-[2rem] shadow-sm">
+<h3 class="text-lg font-headline font-bold mb-8">Vocal Dynamics</h3>
+<!-- Tone Slider -->
+<div class="mb-10">
+<div class="flex justify-between mb-4">
+<label class="text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">music_note</span> Tone
+                            </label>
+<span class="text-xs font-bold text-primary">Baritone</span>
+</div>
+<input class="w-full" max="100" min="0" type="range" value="30"/>
+<div class="flex justify-between mt-2 px-1">
+<span class="text-[10px] text-on-surface-variant font-medium">DEEP</span>
+<span class="text-[10px] text-on-surface-variant font-medium">BRIGHT</span>
+</div>
+</div>
+<!-- Speed Slider -->
+<div class="mb-10">
+<div class="flex justify-between mb-4">
+<label class="text-sm font-semibold flex items-center gap-2">
+<span class="material-symbols-outlined text-xs">speed</span> Response Speed
+                            </label>
+<span class="text-xs font-bold text-primary">1.2x</span>
+</div>
+<input class="w-full" max="200" min="50" type="range" value="120"/>
+<div class="flex justify-between mt-2 px-1">
+<span class="text-[10px] text-on-surface-variant font-medium">RELAXED</span>
+<span class="text-[10px] text-on-surface-variant font-medium">RAPID</span>
+</div>
+</div>
+<!-- AI Thought Chips -->
+<div class="flex flex-wrap gap-2 pt-4">
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1.5 rounded-md text-[10px] font-bold tracking-wider flex items-center gap-1.5 uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                            Natural Pauses
+                        </div>
+<div class="bg-tertiary-container text-on-tertiary-container px-3 py-1.5 rounded-md text-[10px] font-bold tracking-wider flex items-center gap-1.5 uppercase">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                            Breath Modulation
+                        </div>
+</div>
+</div>
+<!-- Test Button Card -->
+<button class="w-full group signature-gradient p-6 rounded-3xl flex items-center justify-between transition-all duration-300 active:scale-95 shadow-lg shadow-primary/20">
+<span class="text-white font-headline font-bold text-lg">Test Voice</span>
+<div class="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</button>
+</div>
+</div>
+<!-- Secondary Info (Editorial Layout) -->
+<div class="mt-12 flex flex-col md:flex-row gap-12 items-center px-4">
+<div class="md:w-1/2">
+<img class="rounded-[2.5rem] w-full h-64 object-cover shadow-xl" data-alt="High-end professional sound recording studio with warm ambient lighting and soft minimalist equipment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbszlX8u6QPLEOX4CmCnrTiWq_6kNLrKY0zK7WwCfDd0P4NUMd5t-MODum_Ba3mvAoKMGv-e2f69QMsgXxVfx7itE1EW8opM1Ey1nLlYedfVBhRaqnv2a1dZJ3awD9Unno_b1kklXJpmhnaYZ16XUcS-8332PQS1n7GsNiHNuqjfNy0QFypG2soMQizMZq9i0j0SLTLNZME-3YnUYRULE1Ivptzj0LbA9ueKqTBPEMvTosdLiKaX2-0W6Rut08_qs4bfcinySSbqI"/>
+</div>
+<div class="md:w-1/2">
+<h3 class="text-2xl font-headline font-bold mb-4">The Science of Sound</h3>
+<p class="text-on-surface-variant leading-relaxed mb-4">Our neural engine processes linguistic patterns at 48kHz, ensuring every syllable retains the human quality of its chosen archetype. Changes are applied instantly across all synchronized devices.</p>
+<div class="flex items-center gap-2 text-secondary font-semibold text-sm">
+<span>Explore audio documentation</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl rounded-t-3xl shadow-[0_-12px_40px_rgba(0,0,0,0.04)] border-t border-slate-200/20">
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300 ease-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-blue-100 dark:bg-blue-900/40 text-blue-900 dark:text-blue-100 rounded-xl px-4 py-1.5 transition-all duration-300 ease-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">graphic_eq</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Voices</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300 ease-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined">call_log</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">History</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 px-4 py-1.5 hover:text-blue-800 dark:hover:text-blue-200 transition-all duration-300 ease-out active:scale-90 cursor-pointer">
+<span class="material-symbols-outlined">psychology</span>
+<span class="font-inter text-[11px] font-medium tracking-wide">Insights</span>
+</div>
+</nav>
+</body></html>
