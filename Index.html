@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aura Assistant - Working</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+
+<div class="bg-white p-8 rounded-2xl shadow-xl w-80">
+
+<h1 class="text-xl font-bold mb-4">Aura Voice Test</h1>
+
+<!-- Tone -->
+<label class="block mb-2 font-semibold">Tone</label>
+<input id="tone" type="range" min="0" max="100" value="30" class="w-full mb-4">
+
+<!-- Speed -->
+<label class="block mb-2 font-semibold">Speed</label>
+<input id="speed" type="range" min="50" max="200" value="120" class="w-full mb-6">
+
+<!-- Button -->
+<button onclick="speak()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold">
+Test Voice
+</button>
+
+</div>
+
+<script>
+function speak() {
+    let text = "Hello, I am your Aura Assistant. How can I help you?";
+
+    let tone = document.getElementById("tone").value;
+    let speed = document.getElementById("speed").value;
+
+    let speech = new SpeechSynthesisUtterance(text);
+
+    // Speed control
+    speech.rate = speed / 100;
+
+    // Tone (pitch)
+    speech.pitch = tone / 50;
+
+    // Voice select (optional)
+    let voices = speechSynthesis.getVoices();
+    speech.voice = voices[0];
+
+    speechSynthesis.speak(speech);
+}
+</script>
+
+</body>
+  </html>
